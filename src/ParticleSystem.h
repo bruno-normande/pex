@@ -12,14 +12,14 @@
 
 class ParticleSystem {
 public:
-	ParticleSystem(uint n_particles);
+	ParticleSystem(unsigned int n_particles);
 	virtual ~ParticleSystem();
 
 	/** Run simulation */
 	void run();
 
 private:
-	uint n_particles;
+	unsigned int n_particles;
 };
 
 #endif /* PARTICLESYSTEM_H_ */

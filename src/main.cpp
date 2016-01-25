@@ -12,8 +12,8 @@
 int main(int argc, char **argv) {
 	std::cout << "Iniciando... " << std::endl;
 
-	uint n_particles = NUM_PARTICLES;
-	uint grid_size = GRID_SIZE;
+	unsigned int n_particles = NUM_PARTICLES;
+	unsigned int grid_size = GRID_SIZE;
 
 	//TODO: adicionar número de partículas por linha de comando
 
@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 
 	//TODO botar para selecionar device por entrada tbm
 
-	ParticleSystem *system = ParticleSystem(n_particles);
+	ParticleSystem *system = new ParticleSystem(n_particles);
 
 	system->run();
 

@@ -7,7 +7,7 @@
 
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(uint n_particles) {
+ParticleSystem::ParticleSystem(unsigned int n_particles) {
 	this->n_particles = n_particles;
 
 }
