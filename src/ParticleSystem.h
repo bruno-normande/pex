@@ -17,6 +17,12 @@ public:
 
 	/** Run simulation */
 	void run();
+	/** Initialize system memory */
+	void memInitialize();
+
+protected:
+	unsigned float *hPos;
+	unsigned float *dPos;
 
 private:
 	unsigned int n_particles;
