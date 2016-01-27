@@ -25,7 +25,7 @@ INCLUDES :=
 
 GENCODE_FLAGS := -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_35,code=compute_35
 
-OBJECTS := ParticleSystem.o main.o ParticleSystem_cuda.o
+OBJECTS := ParticleSystem.o main.o ParticleSystem_cuda.o Particle.o
 
 main.o: main.cpp
 	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
@@ -34,6 +34,9 @@ ParticleSystem.o: ParticleSystem.cpp
 	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
 ParticleSystem_cuda.o: ParticleSystem_cuda.cu
+	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
+	
+Particle.o: Particle.cpp
 	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
 particles: $(OBJECTS)
