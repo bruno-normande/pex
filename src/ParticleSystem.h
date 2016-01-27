@@ -21,8 +21,8 @@ public:
 	void memInitialize();
 
 protected:
-	unsigned float *hPos;
-	unsigned float *dPos;
+	float *hPos;
+	float *dPos;
 
 private:
 	unsigned int n_particles;

@@ -5,7 +5,11 @@
  *      Author: bruno
  */
 
+#include <cuda_runtime.h>
+#include <cuda.h>
+
 #include "ParticleSystem.h"
+#include "helper_cuda.h"
 
 ParticleSystem::ParticleSystem(unsigned int n_particles) :
 	hPos(NULL),
@@ -33,7 +37,7 @@ void ParticleSystem::memInitialize(){
 	hPos = new float[n_particles*4]; //TODO: pq * 4?
 
 	// alocate device memory
-	cudaMalloc((void**) dPos * sizeof(float) * n_particles * 4);
+	checkCudaErrors(cudaMalloc((void**) dPos, sizeof(float) * n_particles * 4));
 
 
 }
