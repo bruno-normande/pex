@@ -10,9 +10,12 @@
 
 class Particle {
 public:
-	__device__ __host__ Particle(){};
-	__device__ __host__ Particle(unsigned int id, float* pos, float* vel);
-	__device__ __host__ ~Particle();
+	__device__ __host__ 
+	Particle(){};
+	__device__ __host__ 
+	Particle(unsigned int id, float* pos, float* vel);
+	__device__ __host__ 
+	~Particle();
 
 private:
 	unsigned int id;

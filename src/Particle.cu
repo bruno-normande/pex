@@ -7,7 +7,8 @@
 
 #include "Particle.h"
 
-__device__ __host__ Particle(unsigned int id, float* pos, float* vel){
+__device__ __host__ 
+Particle::Particle(unsigned int id, float* pos, float* vel){
 	this->id = id;
 	this->pos[0] = pos[0];
 	this->pos[1] = pos[1];
@@ -17,7 +18,8 @@ __device__ __host__ Particle(unsigned int id, float* pos, float* vel){
 	this->vel[2] = vel[2];
 }
 
-__device__ __host__ Particle::~Particle(){
+__device__ __host__ 
+Particle::~Particle(){
 	// TODO Auto-generated destructor stub
 }
 
