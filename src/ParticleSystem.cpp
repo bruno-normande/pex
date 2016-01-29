@@ -53,8 +53,8 @@ void ParticleSystem::memInitialize(){
 	hVel = new float[n_particles*VEL_DIM];
 
 	// alocate device memory
-	checkCudaErrors(cudaMalloc((void**) dPos, sizeof(float) * n_particles * POS_DIM));
-	checkCudaErrors(cudaMalloc((void**) dVel, sizeof(float) * n_particles * VEL_DIM));
+	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float) * n_particles * POS_DIM));
+	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float) * n_particles * VEL_DIM));
 }
 
 void ParticleSystem::createParticles(){
