@@ -28,7 +28,7 @@ public:
 	void createParticles();
 
 	/** Distribute particles in cube */
-	void distributeParticles(int* grid_size, float distance, float jitter);
+	void distributeParticles(unsigned int* grid_size, float distance, float jitter);
 
 	/** */
 	void copyParticlesToDevice();

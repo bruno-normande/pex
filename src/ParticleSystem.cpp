@@ -13,6 +13,11 @@
 #include "ParticleSystem.h"
 #include "helper_cuda.h"
 
+inline float frand()
+{
+    return rand() / (float) RAND_MAX;
+}
+
 ParticleSystem::ParticleSystem(unsigned int n_particles) :
 	hPos(NULL), dPos(NULL),
 	hVel(NULL), dVel(NULL)
@@ -51,7 +56,7 @@ void ParticleSystem::memInitialize(){
 
 void ParticleSystem::createParticles(){
 	float jitter = particle_radius*0.01;
-	unsigned int side = ceilf(powf(n_particles), 1.0/3.0);
+	unsigned int side = ceilf(powf(n_particles, 1.0/3.0));
 	unsigned int grid_size[3]; // quantidade de partículas por lado
 	float distance = particle_radius*2; // distância entre partículas
 
@@ -77,13 +82,13 @@ void ParticleSystem::createParticles(){
 	distributeParticles(grid_size, distance, jitter);
 }
 
-void ParticleSystem::distributeParticles(int* grid_size, float distance, float jitter){
+void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance, float jitter){
 
 	srand(1);
 
 	for(int z = 0; z < grid_size[2]; z++){
 		for(int y = 0; y < grid_size[1]; y++){
-			for(int x = 0; x < grid_size; x++){
+			for(int x = 0; x < grid_size[0]; x++){
 				unsigned int i = (z*grid_size[1]*grid_size[0]) + (y*grid_size[0]) + x;
 
 				if(i < n_particles){
