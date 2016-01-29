@@ -23,7 +23,7 @@ inline float frand()
 ParticleSystem::ParticleSystem(unsigned int n_particles) :
 	hPos(NULL), dPos(NULL),
 	hVel(NULL), dVel(NULL),
-	dt(0,1)
+	dt(0.1)
 {
 	this->n_particles = n_particles;
 	particle_radius = DEFAULT_RADIUS;
@@ -47,7 +47,7 @@ void ParticleSystem::run(){
 	dumpXYZ();
 	integrate();
 
-	copyParticlesTohost();
+	copyParticlesToHost();
 	dumpXYZ();
 
 }

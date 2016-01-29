@@ -8,6 +8,9 @@
 #ifndef PARTICLESYSTEM_H_
 #define PARTICLESYSTEM_H_
 
+#include <algorithm>
+#include <math.h>
+
 #define DEFAULT_RADIUS 1.0/64
 #define POS_DIM 4 //TODO PQ 4?!?!?!
 #define VEL_DIM 4
@@ -44,7 +47,7 @@ public:
 	inline void computeGridSize(unsigned int n, unsigned int block_size,
 						unsigned int *n_blocks, unsigned int *n_threads)
 	{
-		*n_threads = min(block_size, n);
+		*n_threads = std::min(block_size, n);
 		*n_blocks = ceil((float)n/(float)(*n_threads));
 	}
 
