@@ -33,9 +33,12 @@ ParticleSystem::ParticleSystem(unsigned int n_particles) :
 ParticleSystem::~ParticleSystem() {
 	if(hPos)
 		delete hPos;
-
 	if(dPos)
 		cudaFree(dPos);
+	if(hVel)
+		delete hVel;
+	if(dVel)
+		cudaFree(dVel);
 }
 
 void ParticleSystem::run(){
@@ -43,7 +46,7 @@ void ParticleSystem::run(){
 	memInitialize();
 	createParticles();
 
-	for(int i = 0; i < 3; i++){
+	for(int i = 0; i < 10; i++){
 		dumpXYZ();
 
 		copyParticlesToDevice();
@@ -108,8 +111,8 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 					hPos[i].z = (distance * z) + particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
 					hPos[i].w = 0;
 
-					hVel[i].x = 1.0;
-					hVel[i].y = 0.0;
+					hVel[i].x = 0.0;
+					hVel[i].y = -1.0;
 					hVel[i].z = 0.0;
 					hVel[i].w = 0.0;
 				}
