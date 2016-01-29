@@ -52,10 +52,10 @@ public:
 	}
 
 protected:
-	float *hPos;
-	float *dPos;
-	float *hVel;
-	float *dVel;
+	float4 *hPos;
+	float4 *dPos;
+	float4 *hVel;
+	float4 *dVel;
 	float particle_radius;
 
 	float dt;

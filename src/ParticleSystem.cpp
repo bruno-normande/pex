@@ -56,12 +56,12 @@ void ParticleSystem::run(){
 void ParticleSystem::memInitialize(){
 	// alocate host memory
 	// position
-	hPos = new float[n_particles*POS_DIM];
-	hVel = new float[n_particles*VEL_DIM];
+	hPos = new float4[n_particles];
+	hVel = new float4[n_particles];
 
 	// alocate device memory
-	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float) * n_particles * POS_DIM));
-	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float) * n_particles * VEL_DIM));
+	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float4) * n_particles));
+	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float4) * n_particles));
 }
 
 void ParticleSystem::createParticles(){
@@ -102,15 +102,15 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 				unsigned int i = (z*grid_size[1]*grid_size[0]) + (y*grid_size[0]) + x;
 
 				if(i < n_particles){
-					hPos[i*4] = (distance * x) + particle_radius - 1.0f + (frand()*2.0-1.0)*jitter;
-					hPos[i*4+1] = (distance * y) + particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
-					hPos[i*4+2] = (distance * z) + particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
-					hPos[i*4+3] = 1.0;
+					hPos[i].x = (distance * x) + particle_radius - 1.0f + (frand()*2.0-1.0)*jitter;
+					hPos[i].y = (distance * y) + particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
+					hPos[i].z = (distance * z) + particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
+					//hPos[i*4+3] = 1.0;
 
-					hVel[i*4] = 0.0;
-					hVel[i*4+1] = 0.0;
-					hVel[i*4+2] = 0.0;
-					hVel[i*4+3] = 0.0;
+					hVel[i].x = 0.0;
+					hVel[i].y = 0.0;
+					hVel[i].z = 0.0;
+					//hVel[i*4+3] = 0.0;
 				}
 			}
 		}
@@ -120,7 +120,7 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 void ParticleSystem::dumpXYZ(){
 	std::cout << n_particles << std::endl << std::endl;
 	for(int i = 0; i < n_particles; i++){
-		std::cout << i << " " << hPos[i*POS_DIM] << " " << hPos[i*POS_DIM + 1] << " " << hPos[i*POS_DIM+2] << std::endl;
+		std::cout << i << " " << hPos[i].x << " " << hPos[i].y << " " << hPos[i].z << std::endl;
 	}
 	std::cout << std::endl;
 }

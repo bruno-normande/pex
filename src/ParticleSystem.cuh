@@ -9,10 +9,8 @@
 #define PARTICLESYSTEM_CUH_
 
 __global__
-void integrate_system(float *pos, float *vel,
-						float dt, unsigned int n_particles);
-
-__global__
-void simple_sum(float *pos, int N);
+void integrate_system(float4 *pos, float4 *vel,
+						float dt, unsigned int n_particles,
+						float damping);
 
 #endif /* PARTICLESYSTEM_CUH_ */
