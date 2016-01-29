@@ -7,7 +7,7 @@
 #include "ParticleSystem.h"
 
 #define GRID_SIZE       64
-#define NUM_PARTICLES   256
+#define NUM_PARTICLES   5
 
 int main(int argc, char **argv) {
 	std::cout << "Iniciando... " << std::endl;

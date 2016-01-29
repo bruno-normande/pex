@@ -13,6 +13,7 @@
 
 #include "ParticleSystem.h"
 #include "helper_cuda.h"
+#include "ParticleSystem.cuh"
 
 inline float frand()
 {
@@ -21,7 +22,8 @@ inline float frand()
 
 ParticleSystem::ParticleSystem(unsigned int n_particles) :
 	hPos(NULL), dPos(NULL),
-	hVel(NULL), dVel(NULL)
+	hVel(NULL), dVel(NULL),
+	dt(0,1)
 {
 	this->n_particles = n_particles;
 	particle_radius = DEFAULT_RADIUS;
@@ -42,6 +44,10 @@ void ParticleSystem::run(){
 	createParticles();
 	copyParticlesToDevice();
 
+	dumpXYZ();
+	integrate();
+
+	copyParticlesTohost();
 	dumpXYZ();
 
 }
@@ -116,13 +122,26 @@ void ParticleSystem::copyParticlesToDevice(){
 
 }
 
+void ParticleSystem::copyParticlesToHost(){
+	checkCudaErrors(cudaMemcpy((void*)hPos, (void*)dPos, sizeof(float)*POS_DIM*n_particles, cudaMemcpyHostToDevice));
+	checkCudaErrors(cudaMemcpy((void*)hVel, (void*)dVel, sizeof(float)*VEL_DIM*n_particles, cudaMemcpyHostToDevice));
+
+}
+
 void ParticleSystem::dumpXYZ(){
 	std::cout << n_particles << std::endl << std::endl;
 	for(int i = 0; i < n_particles; i++){
 		std::cout << i << " " << hPos[0] << " " << hPos[1] << " " << hPos[2] << std::endl;
 	}
+	std::cout << std::endl;
 }
 
+void ParticleSystem::integrate(){
+	unsigned int n_threads, n_blocks;
+	computeGridSize(n_particles,256, &n_blocks, &n_threads);
+
+	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dt, n_particles);
+}
 
 
 

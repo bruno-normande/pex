@@ -32,9 +32,21 @@ public:
 
 	/** */
 	void copyParticlesToDevice();
+	/** */
+	void copyParticlesToHost();
 
 	/** Dump to stdout particles location */
 	void dumpXYZ();
+
+	/** Integrate system */
+	void integrate();
+
+	inline void computeGridSize(unsigned int n, unsigned int block_size,
+						unsigned int *n_blocks, unsigned int *n_threads)
+	{
+		*n_threads = min(block_size, n);
+		*n_blocks = ceil((float)n/(float)(*n_threads));
+	}
 
 protected:
 	float *hPos;
@@ -42,6 +54,8 @@ protected:
 	float *hVel;
 	float *dVel;
 	float particle_radius;
+
+	float dt;
 
 	SystemType type;
 
