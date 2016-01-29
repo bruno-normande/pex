@@ -33,6 +33,9 @@ public:
 	/** */
 	void copyParticlesToDevice();
 
+	/** Dump to stdout particles location */
+	void dumpXYZ();
+
 protected:
 	float *hPos;
 	float *dPos;

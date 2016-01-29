@@ -6,6 +6,7 @@
  */
 
 #include <math.h>
+#include <iostream>
 
 #include <cuda_runtime.h>
 #include <cuda.h>
@@ -40,6 +41,8 @@ void ParticleSystem::run(){
 	memInitialize();
 	createParticles();
 	copyParticlesToDevice();
+
+	dumpXYZ();
 
 }
 
@@ -113,7 +116,12 @@ void ParticleSystem::copyParticlesToDevice(){
 
 }
 
-
+void ParticleSystem::dumpXYZ(){
+	std::cout << n_particles << std::endl << std::endl;
+	for(int i = 0; i < n_particles; i++){
+		std::cout << i << " " << hPos[0] << " " << hPos[1] << " " << hPos[2] << std::endl;
+	}
+}
 
 
 
