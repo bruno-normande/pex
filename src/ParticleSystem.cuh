@@ -12,4 +12,7 @@ __global__
 void integrate_system(float *pos, float *vel,
 						float dt, unsigned int n_particles);
 
+__global__
+void simple_sum(float *pos, int N);
+
 #endif /* PARTICLESYSTEM_CUH_ */

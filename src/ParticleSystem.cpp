@@ -45,6 +45,7 @@ void ParticleSystem::run(){
 	copyParticlesToDevice();
 
 	dumpXYZ();
+
 	integrate();
 
 	copyParticlesToHost();
@@ -104,7 +105,7 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 					hPos[i*4] = (distance * x) + particle_radius - 1.0f + (frand()*2.0-1.0)*jitter;
 					hPos[i*4+1] = (distance * y) + particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
 					hPos[i*4+2] = (distance * z) + particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
-					hPos[i*4+2] = 1.0;
+					hPos[i*4+3] = 1.0;
 
 					hVel[i*4] = 0.0;
 					hVel[i*4+1] = 0.0;
@@ -116,22 +117,10 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 	}
 }
 
-void ParticleSystem::copyParticlesToDevice(){
-	checkCudaErrors(cudaMemcpy((void*)dPos, (void*)hPos, sizeof(float)*POS_DIM*n_particles, cudaMemcpyHostToDevice));
-	checkCudaErrors(cudaMemcpy((void*)dVel, (void*)hVel, sizeof(float)*VEL_DIM*n_particles, cudaMemcpyHostToDevice));
-
-}
-
-void ParticleSystem::copyParticlesToHost(){
-	checkCudaErrors(cudaMemcpy((void*)hPos, (void*)dPos, sizeof(float)*POS_DIM*n_particles, cudaMemcpyHostToDevice));
-	checkCudaErrors(cudaMemcpy((void*)hVel, (void*)dVel, sizeof(float)*VEL_DIM*n_particles, cudaMemcpyHostToDevice));
-
-}
-
 void ParticleSystem::dumpXYZ(){
 	std::cout << n_particles << std::endl << std::endl;
 	for(int i = 0; i < n_particles; i++){
-		std::cout << i << " " << hPos[0] << " " << hPos[1] << " " << hPos[2] << std::endl;
+		std::cout << i << " " << hPos[i*POS_DIM] << " " << hPos[i*POS_DIM + 1] << " " << hPos[i*POS_DIM+2] << std::endl;
 	}
 	std::cout << std::endl;
 }

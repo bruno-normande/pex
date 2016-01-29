@@ -1,24 +1,37 @@
 
+#include <iostream>
 
 #include "ParticleSystem.h"
 #include "ParticleSystem.cuh"
-
+#include "helper_cuda.h"
 
 __global__
 void integrate_system(float *pos, float *vel,
 						float dt, unsigned int n_particles)
 {
-	unsigned int index = blockIdx.x * blockDim.x + threadIdx.x;
-
-	if(index >= n_particles) return;
-
-	pos[index*4] = pos[index*4 + 1] = pos[index*4 + 2] = pos[index*4 + 3] = index;
+	int idx = blockIdx.x * blockDim.x + threadIdx.x;
+	
+	if(idx>=n_particles) return; 
+	
+	pos[idx*4] = idx;
+	pos[idx*4 + 1] = idx*idx;
 
 }
 
 void ParticleSystem::integrate(){
 	unsigned int n_threads, n_blocks;
 	computeGridSize(n_particles,256, &n_blocks, &n_threads);
-
 	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dt, n_particles);
+}
+
+void ParticleSystem::copyParticlesToDevice(){
+        checkCudaErrors(cudaMemcpy(dPos, hPos, sizeof(float)*POS_DIM*n_particles, cudaMemcpyHostToDevice));
+        checkCudaErrors(cudaMemcpy(dVel, hVel, sizeof(float)*VEL_DIM*n_particles, cudaMemcpyHostToDevice));
+
+}
+
+void ParticleSystem::copyParticlesToHost(){
+        checkCudaErrors(cudaMemcpy(hPos, dPos, sizeof(float)*POS_DIM*n_particles, cudaMemcpyDeviceToHost));
+        checkCudaErrors(cudaMemcpy(hVel, dVel, sizeof(float)*VEL_DIM*n_particles, cudaMemcpyDeviceToHost));
+
 }

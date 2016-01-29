@@ -34,13 +34,16 @@ main.o: main.cpp
 ParticleSystem.o: ParticleSystem.cpp
 	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 	
-ParticleSystem_cuda.o: ParticleSystem_cuda.cpp
+ParticleSystem_cuda.o: ParticleSystem_cuda.cu
 	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
 particles: $(OBJECTS)
 	$(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
 	
 all: particles
+
+test: particles
+	./particles
 
 clean:
 	rm *.o
