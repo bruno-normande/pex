@@ -136,12 +136,6 @@ void ParticleSystem::dumpXYZ(){
 	std::cout << std::endl;
 }
 
-void ParticleSystem::integrate(){
-	unsigned int n_threads, n_blocks;
-	computeGridSize(n_particles,256, &n_blocks, &n_threads);
-
-	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dt, n_particles);
-}
 
 
 
