@@ -8,7 +8,11 @@
 #ifndef PARTICLESYSTEM_H_
 #define PARTICLESYSTEM_H_
 
-#define DENSE = 0
+#define DEFAULT_RADIUS 1.0/64
+#define POS_DIM 4 //TODO PQ 4?!?!?!
+#define VEL_DIM 4
+
+enum SystemType { DENSE, SPARSE, FLUID };
 
 class ParticleSystem {
 public:
@@ -20,11 +24,24 @@ public:
 	/** Initialize system memory */
 	void memInitialize();
 
+	/** Initialize particles */
+	void createParticles();
+
+	/** Distribute particles in cube */
+	void distributeParticles(int* grid_size, float distance, float jitter);
+
+	/** */
+	void copyParticlesToDevice();
+
 protected:
 	float *hPos;
 	float *dPos;
+	float *hVel;
+	float *dVel;
+	float particle_radius;
 
-private:
+	SystemType type;
+
 	unsigned int n_particles;
 };
 
