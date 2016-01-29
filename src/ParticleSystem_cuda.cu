@@ -13,16 +13,15 @@ void integrate_system(float4 *pos, float4 *vel,
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	
 	if(idx>=n_particles) return; 
-	
-	pos[idx].x = idx;
-	pos[idx].y = idx*idx;
+	//TODO Calcular antes força resultante para cada partícula (incluindo aceleração gravitacional)
+	pos[idx] += vel[idx]*dt*damping;
 
 }
 
 void ParticleSystem::integrate(){
 	unsigned int n_threads, n_blocks;
 	computeGridSize(n_particles,256, &n_blocks, &n_threads);
-	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dt, n_particles, 1); //TODO: Set damping
+	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dt, n_particles, damping);
 }
 
 void ParticleSystem::copyParticlesToDevice(){

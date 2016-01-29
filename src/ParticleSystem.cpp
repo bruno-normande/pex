@@ -23,7 +23,7 @@ inline float frand()
 ParticleSystem::ParticleSystem(unsigned int n_particles) :
 	hPos(NULL), dPos(NULL),
 	hVel(NULL), dVel(NULL),
-	dt(0.1)
+	dt(0.1), damping(1.0)
 {
 	this->n_particles = n_particles;
 	particle_radius = DEFAULT_RADIUS;
@@ -42,13 +42,14 @@ void ParticleSystem::run(){
 
 	memInitialize();
 	createParticles();
-	copyParticlesToDevice();
 
-	dumpXYZ();
+	for(int i = 0; i < 3; i++){
+		dumpXYZ();
 
-	integrate();
-
-	copyParticlesToHost();
+		copyParticlesToDevice();
+		integrate();
+		copyParticlesToHost();
+	}
 	dumpXYZ();
 
 }
@@ -105,12 +106,12 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 					hPos[i].x = (distance * x) + particle_radius - 1.0f + (frand()*2.0-1.0)*jitter;
 					hPos[i].y = (distance * y) + particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
 					hPos[i].z = (distance * z) + particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
-					//hPos[i*4+3] = 1.0;
+					hPos[i].w = 0;
 
-					hVel[i].x = 0.0;
+					hVel[i].x = 1.0;
 					hVel[i].y = 0.0;
 					hVel[i].z = 0.0;
-					//hVel[i*4+3] = 0.0;
+					hVel[i].w = 0.0;
 				}
 			}
 		}

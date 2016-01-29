@@ -56,9 +56,10 @@ protected:
 	float4 *dPos;
 	float4 *hVel;
 	float4 *dVel;
-	float particle_radius;
 
+	float particle_radius;
 	float dt;
+	float damping;
 
 	SystemType type;
 
