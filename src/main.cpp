@@ -13,7 +13,6 @@ int main(int argc, char **argv) {
 	std::cout << "Iniciando... " << std::endl;
 
 	unsigned int n_particles = NUM_PARTICLES;
-	unsigned int grid_size = GRID_SIZE;
 
 	//TODO: adicionar número de partículas por linha de comando
 

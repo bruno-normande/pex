@@ -11,9 +11,15 @@
 #include <algorithm>
 #include <math.h>
 
-#define DEFAULT_RADIUS 1.0/64
-#define POS_DIM 4 //TODO PQ 4?!?!?!
-#define VEL_DIM 4
+struct SysParams{
+	float3 gravity;
+	float dt;
+
+	float particle_radius;
+
+	float boundarie_damping;
+	float global_damping;
+};
 
 enum SystemType { DENSE, SPARSE, FLUID };
 
@@ -57,9 +63,7 @@ protected:
 	float4 *hVel;
 	float4 *dVel;
 
-	float particle_radius;
-	float dt;
-	float damping;
+	SysParams params;
 
 	SystemType type;
 

@@ -16,10 +16,8 @@ public:
 	/** Atualiza posição da partícula para que ela não
 	 * atravesse nenhum objeto ou parede */
 	__device__ __host__
-	static void checkBoudaries(float4* pos, float4* vel, const float &radius);
+	static void checkBoudaries(float4* pos, float4* vel);
 
-private:
-	static float boundarie_damping;
 };
 
 #endif /* WORLD_H_ */

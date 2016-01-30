@@ -7,19 +7,20 @@
 #include "helper_math.h"
 #include "World.cuh"
 
+__constant__ SysParams system_params;
+
 __global__
 void integrate_system(float4 *pos, float4 *vel,
-						float dt, unsigned int n_particles,
-						float damping, float radius)
+						float dt, unsigned int n_particles)
 {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	
 	if(idx>=n_particles) return; 
 	//TODO Calcular antes força resultante para cada partícula (incluindo
 	// aceleração gravitacional)
-	pos[idx] += vel[idx]*dt*damping;
+	pos[idx] += vel[idx]*dt*system_params.global_damping;
 
-	World::checkBoudaries(pos, vel, radius);
+	World::checkBoudaries(pos, vel);
 
 }
 
@@ -27,7 +28,7 @@ void ParticleSystem::integrate(){
 	unsigned int n_threads, n_blocks;
 	computeGridSize(n_particles,256, &n_blocks, &n_threads);
 	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dt, n_particles,
-			damping, particle_radius);
+			damping);
 }
 
 void ParticleSystem::copyParticlesToDevice(){
