@@ -7,6 +7,9 @@
 #include "helper_math.h"
 #include "World.cuh"
 
+__constant__
+SysParams system_params;
+
 __global__
 void integrate_system(float4 *pos, float4 *vel, unsigned int n_particles)
 {

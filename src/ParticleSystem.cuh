@@ -10,7 +10,7 @@
 
 #include "ParticleSystem.h"
 
-__constant__
+extern __constant__
 SysParams system_params;
 
 __global__
