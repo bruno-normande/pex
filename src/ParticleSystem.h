@@ -39,6 +39,9 @@ public:
 	/** Distribute particles in cube */
 	void distributeParticles(unsigned int* grid_size, float distance, float jitter);
 
+	/** Distribute random velocity to all particles */
+	void randomizeVelocity();
+
 	/** */
 	void copyParticlesToDevice();
 	/** */

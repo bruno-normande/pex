@@ -84,7 +84,8 @@ void ParticleSystem::createParticles(){
 	case SPARSE:
 		// igual ao dense mas com Distancia entre partículas maior
 		grid_size[0] = grid_size[1] = grid_size[2] = side;
-		distance = params.particle_radius*10.0; //TODO: Colocar velocidades alleatórias depois
+		distance = params.particle_radius*10.0; //TODO: Checar se essa distância está boa
+		randomizeVelocity();
 		break;
 
 	case FLUID:
@@ -117,12 +118,20 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 					hPos[i].w = 0;
 
 					hVel[i].x = 0.0;
-					hVel[i].y = -1.0;
+					hVel[i].y = 0.0;
 					hVel[i].z = 0.0;
 					hVel[i].w = 0.0;
 				}
 			}
 		}
+	}
+}
+
+void ParticleSystem::randomizeVelocity(){
+	for(int i = 0; i < n_particles; i++){
+		hVel[i].x = frand()*2.0 - 1.0;
+		hVel[i].y = frand()*2.0 - 1.0;
+		hVel[i].z = frand()*2.0 - 1.0;
 	}
 }
 
