@@ -15,6 +15,7 @@ public:
 
 	/** Atualiza posição da partícula para que ela não
 	 * atravesse nenhum objeto ou parede */
+	__device__ __host__
 	static void checkBoudaries(float4* pos, float4* vel, const float &radius);
 
 private:

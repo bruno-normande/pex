@@ -5,10 +5,11 @@
  *      Author: bruno
  */
 
-#include "World.h"
+#include "World.cuh"
 
 float World::boundarie_damping = -5.0;
 
+__device__ __host__
 void World::checkBoudaries(float4* pos, float4* vel,
 		const float &radius)
 {

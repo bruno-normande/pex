@@ -5,7 +5,7 @@
 #include "ParticleSystem.cuh"
 #include "helper_cuda.h"
 #include "helper_math.h"
-#include "World.h"
+#include "World.cuh"
 
 __global__
 void integrate_system(float4 *pos, float4 *vel,
