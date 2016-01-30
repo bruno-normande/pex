@@ -20,7 +20,7 @@ void integrate_system(float4 *pos, float4 *vel, unsigned int n_particles)
 	// aceleração gravitacional)
 	pos[idx] += vel[idx]*system_params.dt*system_params.global_damping;
 
-	World::checkBoudaries(pos, vel);
+	World::checkBoudaries(&pos[idx], &vel[idx]);
 
 }
 
