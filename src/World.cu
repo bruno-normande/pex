@@ -6,10 +6,9 @@
  */
 
 #include "World.cuh"
+#include "ParticleSystem.cuh"
 
-float World::boundarie_damping = -5.0;
-
-__device__ __host__
+__device__
 void World::checkBoudaries(float4* pos, float4* vel)
 {
 	// inicialmente vamos apenas impedir as particulas de passarem

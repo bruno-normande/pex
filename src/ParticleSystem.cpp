@@ -27,7 +27,7 @@ ParticleSystem::ParticleSystem(unsigned int n_particles) :
 	this->n_particles = n_particles;
 	type = DENSE; // default
 
-	params.particle_radius = DEFAULT_RADIUS;
+	params.particle_radius = 1.0/64.0;
 	params.dt = 0.1;
 	params.boundarie_damping = -0.5;
 	params.global_damping = 1.0;
@@ -70,7 +70,7 @@ void ParticleSystem::memInitialize(){
 	// alocate device memory
 	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float4) * n_particles));
 	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float4) * n_particles));
-	checkCudaErrors(cudaMemcpyToSymbol(system_params, params, sizeof(SysParams)));
+	checkCudaErrors(cudaMemcpyToSymbol(&system_params, &params, sizeof(SysParams)));
 }
 
 void ParticleSystem::createParticles(){
