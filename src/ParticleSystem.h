@@ -10,6 +10,8 @@
 
 #include <algorithm>
 #include <math.h>
+#include <string>
+#include <fstream>
 
 struct SysParams{
 	float3 gravity;
@@ -53,6 +55,12 @@ public:
 	/** Integrate system */
 	void integrate();
 
+	/** Clean everything up after finish */
+	void cleanUp();
+
+	/** Set output file */
+	void setOutputFile(std::string file_name);
+
 	inline void computeGridSize(unsigned int n, unsigned int block_size,
 						unsigned int *n_blocks, unsigned int *n_threads)
 	{
@@ -71,6 +79,8 @@ protected:
 	SystemType type;
 
 	unsigned int n_particles;
+
+	std::ofstream f_out;
 };
 
 #endif /* PARTICLESYSTEM_H_ */

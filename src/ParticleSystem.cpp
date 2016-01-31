@@ -136,11 +136,23 @@ void ParticleSystem::randomizeVelocity(){
 }
 
 void ParticleSystem::dumpXYZ(){
-	std::cout << n_particles << std::endl << std::endl;
-	for(int i = 0; i < n_particles; i++){
-		std::cout << i << " " << hPos[i].x << " " << hPos[i].y << " " << hPos[i].z << std::endl;
+	if(f_out.is_open()){
+		f_out << n_particles << std::endl << std::endl;
+		for(int i = 0; i < n_particles; i++){
+			f_out << i << " " << hPos[i].x << " " << hPos[i].y << " " << hPos[i].z << std::endl;
+		}
 	}
-	std::cout << std::endl;
+}
+
+void ParticleSystem::cleanUp(){
+	if(f_out.is_open()){
+		f_out.close();
+	}
+}
+
+void ParticleSystem::setOutputFile(std::string file_name){
+	if(!file_name.empty())
+		f_out.open(file_name);
 }
 
 
