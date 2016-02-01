@@ -16,9 +16,12 @@ void integrate_system(float4 *pos, float4 *vel, unsigned int n_particles)
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	
 	if(idx>=n_particles) return; 
-	//TODO Calcular antes força resultante para cada partícula (incluindo
-	// aceleração gravitacional)
-	pos[idx] += vel[idx]*system_params.dt*system_params.global_damping;
+
+	float3 vel_f = make_float3(*vel);
+	vel_f += system_params.gravity*system_params.dt;
+	vel_f *= system_params.global_damping;
+
+	pos[idx] += make_float4(vel_f*system_params.dt) ;
 
 	World::checkBoudaries(&pos[idx], &vel[idx]);
 
@@ -45,3 +48,4 @@ void ParticleSystem::copyParticlesToHost(){
         							cudaMemcpyDeviceToHost));
 
 }
+
