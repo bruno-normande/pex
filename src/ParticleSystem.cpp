@@ -151,8 +151,11 @@ void ParticleSystem::cleanUp(){
 }
 
 void ParticleSystem::setOutputFile(std::string file_name){
+	if(f_out.is_open()){
+		f_out.close();
+	}
 	if(!file_name.empty())
-		f_out.open(file_name);
+		f_out.open(file_name.c_str());
 }
 
 

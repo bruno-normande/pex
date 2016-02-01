@@ -28,17 +28,18 @@ int main(int argc, char **argv) {
 	po::store(po::parse_command_line(argc,argv,desc), vm);
 	po::notify(vm);
 
-	if(vm.coun("help")){
+	if(vm.count("help")){
 		std::cout << desc << std::endl;
 		return 0;
 	}
 
-	if(vm.count("n")){
-		n_particles = vm["n"].as<unsigned int>();
+	if(vm.count("-n")){
+		//std::cout << vm << std::endl;
+		n_particles = vm["-n"].as<unsigned int>();
 	}
 	ParticleSystem *system = new ParticleSystem(n_particles);
 
-	std::cout << "Starting simulation..." << std::endl << "N = " << n_particles;
+	std::cout << "Starting simulation..." << std::endl << "N = " << n_particles << std::endl;
 	std::string out_file;
 	if(vm.count("file")){
 		out_file = vm["file"].as<std::string>();
