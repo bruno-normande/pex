@@ -73,6 +73,7 @@ protected:
 	float4 *dPos;
 	float4 *hVel;
 	float4 *dVel;
+	float4 *dFor;
 
 	SysParams params;
 

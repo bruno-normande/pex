@@ -22,13 +22,14 @@ inline float frand()
 
 ParticleSystem::ParticleSystem(unsigned int n_particles) :
 	hPos(NULL), dPos(NULL),
-	hVel(NULL), dVel(NULL)
+	hVel(NULL), dVel(NULL),
+	dFor(NULL)
 {
 	this->n_particles = n_particles;
 	type = DENSE; // default
 
 	params.particle_radius = 1.0/64.0;
-	params.dt = 0.1;
+	params.dt = 0.01;
 	params.boundarie_damping = -0.5;
 	params.global_damping = 1.0;
 	params.gravity = make_float3(0.0, -0.0003, 0.0);
@@ -43,6 +44,8 @@ ParticleSystem::~ParticleSystem() {
 		delete hVel;
 	if(dVel)
 		cudaFree(dVel);
+	if(dFor)
+		cudaFree(dFor);
 }
 
 void ParticleSystem::run(){
@@ -50,12 +53,19 @@ void ParticleSystem::run(){
 	memInitialize();
 	createParticles();
 
-	for(int i = 0; i < 10; i++){
-		dumpXYZ();
+	copyParticlesToDevice();
+	for(int i = 0; i < 100; i++){
 
-		copyParticlesToDevice();
 		integrate();
-		copyParticlesToHost();
+
+		// search for neighboors
+
+		// calculate forces
+
+		if(i%5){
+			copyParticlesToHost();
+			dumpXYZ();
+		}
 	}
 	dumpXYZ();
 
@@ -70,6 +80,7 @@ void ParticleSystem::memInitialize(){
 	// alocate device memory
 	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float4) * n_particles));
 	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float4) * n_particles));
+	checkCudaErrors(cudaMalloc((void**) &dFor, sizeof(float4) * n_particles));
 	checkCudaErrors(cudaMemcpyToSymbol(&system_params, &params, sizeof(SysParams)));
 }
 
