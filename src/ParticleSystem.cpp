@@ -11,16 +11,18 @@
 #include <cuda_runtime.h>
 #include <cuda.h>
 
-#include "ParticleSystem.h"
 #include "helper_cuda.h"
+#include "ParticleSystem.h"
 #include "ParticleSystem.cuh"
+#include "DirectMapping.h"
 
 inline float frand()
 {
     return rand() / (float) RAND_MAX;
 }
 
-ParticleSystem::ParticleSystem(unsigned int n_particles) :
+ParticleSystem::ParticleSystem(unsigned int n_particles,
+								NeighboorAlg neigh_alg = DM) :
 	hPos(NULL), dPos(NULL),
 	hVel(NULL), dVel(NULL),
 	dFor(NULL)
@@ -32,7 +34,17 @@ ParticleSystem::ParticleSystem(unsigned int n_particles) :
 	params.dt = 0.01;
 	params.boundarie_damping = -0.5;
 	params.global_damping = 1.0;
-	params.gravity = make_float3(0.0, -0.0003, 0.0);
+	params.gravity = make_float3(0.0, 0.0, -0.0003);
+	params.p_max = make_float3(0.0,0.0,0.0);
+	params.p_min = make_float3(0.0,0.0,0.0);
+
+	switch (neigh_alg) {
+		case DM:
+			contact = new DirectMapping();
+			break;
+		default:
+			break;
+	}
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -59,6 +71,7 @@ void ParticleSystem::run(){
 		integrate();
 
 		// search for neighboors
+		contact->createNeighboorList(dPos);
 
 		// calculate forces
 
@@ -82,6 +95,8 @@ void ParticleSystem::memInitialize(){
 	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float4) * n_particles));
 	checkCudaErrors(cudaMalloc((void**) &dFor, sizeof(float4) * n_particles));
 	checkCudaErrors(cudaMemcpyToSymbol(&system_params, &params, sizeof(SysParams)));
+
+	contact->memInitialize();
 }
 
 void ParticleSystem::createParticles(){
@@ -124,8 +139,21 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 
 				if(i < n_particles){
 					hPos[i].x = (distance * x) + params.particle_radius - 1.0f + (frand()*2.0-1.0)*jitter;
+					if(hPos[i].x > params.p_max.x)
+						params.p_max.x = hPos[i].x;
+					if(hPos[i].x < params.p_min.x)
+						params.p_min.x = hPos[i].x;
 					hPos[i].y = (distance * y) + params.particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
+					if(hPos[i].y > params.p_max.y)
+						params.p_max.y = hPos[i].y;
+					if(hPos[i].y < params.p_min.y)
+						params.p_min.y = hPos[i].y;
 					hPos[i].z = (distance * z) + params.particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
+					if(hPos[i].z > params.p_max.z)
+						params.p_max.z = hPos[i].z;
+					if(hPos[i].z < params.p_min.z)
+						params.p_min.z = hPos[i].z;
+
 					hPos[i].w = 0;
 
 					hVel[i].x = 0.0;

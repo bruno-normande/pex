@@ -13,21 +13,27 @@
 #include <string>
 #include <fstream>
 
+#include "ContactDetection.h"
+
+enum SystemType { DENSE, SPARSE, FLUID };
+enum NeighboorAlg { DM };
+
 struct SysParams{
 	float3 gravity;
 	float dt;
 
 	float particle_radius;
+	float3 p_max; // Max x, y, z
+	float3 pmin; // Min x, y, z
 
 	float boundarie_damping;
 	float global_damping;
-};
 
-enum SystemType { DENSE, SPARSE, FLUID };
+};
 
 class ParticleSystem {
 public:
-	ParticleSystem(unsigned int n_particles);
+	ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg = DM);
 	virtual ~ParticleSystem();
 
 	/** Run simulation */
@@ -82,6 +88,8 @@ protected:
 	unsigned int n_particles;
 
 	std::ofstream f_out;
+
+	ContactDetection *contact;
 };
 
 #endif /* PARTICLESYSTEM_H_ */
