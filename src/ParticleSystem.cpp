@@ -29,10 +29,10 @@ ParticleSystem::ParticleSystem(unsigned int n_particles) :
 	type = DENSE; // default
 
 	params.particle_radius = 1.0/64.0;
-	params.dt = 0.01;
+	params.dt = 0.1;
 	params.boundarie_damping = -0.5;
 	params.global_damping = 1.0;
-	params.gravity = make_float3(0.0, -0.0003, 0.0);
+	params.gravity = make_float3(0.0, 0.0, -0.09);
 }
 
 ParticleSystem::~ParticleSystem() {
@@ -125,7 +125,7 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 				if(i < n_particles){
 					hPos[i].x = (distance * x) + params.particle_radius - 1.0f + (frand()*2.0-1.0)*jitter;
 					hPos[i].y = (distance * y) + params.particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
-					hPos[i].z = (distance * z) + params.particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
+					hPos[i].z = (distance * z) + params.particle_radius - 0.9  + (frand()*2.0f-1.0f)*jitter;
 					hPos[i].w = 0;
 
 					hVel[i].x = 0.0;

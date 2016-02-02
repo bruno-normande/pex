@@ -22,6 +22,7 @@ void integrate_system(float4 *pos, float4 *vel, unsigned int n_particles)
 	vel_f *= system_params.global_damping;
 
 	pos[idx] += make_float4(vel_f*system_params.dt) ;
+	vel[idx] =  make_float4(vel_f);
 
 	World::checkBoudaries(&pos[idx], &vel[idx]);
 
