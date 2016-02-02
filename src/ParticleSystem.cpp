@@ -22,7 +22,7 @@ inline float frand()
 }
 
 ParticleSystem::ParticleSystem(unsigned int n_particles,
-								NeighboorAlg neigh_alg = DM) :
+								NeighboorAlg neigh_alg) :
 	hPos(NULL), dPos(NULL),
 	hVel(NULL), dVel(NULL),
 	dFor(NULL)

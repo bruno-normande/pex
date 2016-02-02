@@ -13,12 +13,14 @@ public:
 	ContactDetection(){}
 	virtual ~ContactDetection(){}
 
-	void memInitialize() = 0;
+	virtual void memInitialize() = 0;
 
-	void createNeighboorList(float4 *dPos) = 0;
+	virtual void createNeighboorList(float4 *dPos) = 0;
 
 	// Colocar para receber ponteiro dFor
-	void calculateContactForce() = 0;
+	virtual void calculateContactForce() = 0;
+	virtual void setPMin(float3 pMin) = 0;
+	virtual void setPMax(float3 pMax) = 0;
 };
 
 #endif /* CONTACTDETECTION_H_ */

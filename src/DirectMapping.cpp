@@ -40,3 +40,9 @@ void DirectMapping::createNeighboorList(float4 *dPos){
 void DirectMapping::calculateContactForce(){
 
 }
+
+void DirectMapping::setPMin(float3 pMin){
+
+}
+	void setPMax(float3 pMax);
+

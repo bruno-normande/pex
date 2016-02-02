@@ -12,12 +12,15 @@
 
 class DirectMapping : ContactDetection {
 public:
-	DirectMapping(float3 pMax, float3 pMin, float d, unsigned int n_particle);
+	DirectMapping( unsigned int n_particle);
 	virtual ~DirectMapping();
 
 	void memInitialize();
 	void createNeighboorList(float4 *dPos);
 	void calculateContactForce();
+
+	void setPMin(float3 pMin);
+	void setPMax(float3 pMax);
 
 protected:
 	int3 gridDim;

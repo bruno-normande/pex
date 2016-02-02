@@ -24,7 +24,7 @@ struct SysParams{
 
 	float particle_radius;
 	float3 p_max; // Max x, y, z
-	float3 pmin; // Min x, y, z
+	float3 p_min; // Min x, y, z
 
 	float boundarie_damping;
 	float global_damping;
