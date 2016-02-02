@@ -18,7 +18,7 @@ public:
 	virtual void createNeighboorList(float4 *dPos) = 0;
 
 	// Colocar para receber ponteiro dFor
-	virtual void calculateContactForce() = 0;
+	virtual void calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor) = 0;
 
 	virtual void setMinMax(float3 pMin, float3 pMax) = 0;
 };

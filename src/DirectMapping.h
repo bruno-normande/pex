@@ -10,14 +10,14 @@
 
 #include "ContactDetection.h"
 
-class DirectMapping : ContactDetection {
+class DirectMapping : public ContactDetection {
 public:
 	DirectMapping( unsigned int n_particle);
 	virtual ~DirectMapping();
 
 	void memInitialize();
 	void createNeighboorList(float4 *dPos);
-	void calculateContactForce();
+	void calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor);
 
 	void setMinMax(float3 pMin, float3 pMax);
 

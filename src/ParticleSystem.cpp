@@ -27,9 +27,9 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 	hVel(NULL), dVel(NULL),
 	dFor(NULL)
 {
-	this->n_particles = n_particles;
 	type = DENSE; // default
 
+	params.n_particles = n_particles;
 	params.particle_radius = 1.0/64.0;
 	params.dt = 0.1;
 	params.boundarie_damping = -0.5;
@@ -75,6 +75,7 @@ void ParticleSystem::run(){
 		contact->createNeighboorList(dPos);
 
 		// calculate forces
+		contact->calculateContactForce(dPos, dFor);
 
 		if(i%5){
 			copyParticlesToHost();
@@ -88,13 +89,13 @@ void ParticleSystem::run(){
 void ParticleSystem::memInitialize(){
 	// alocate host memory
 	// position
-	hPos = new float4[n_particles];
-	hVel = new float4[n_particles];
+	hPos = new float4[params.n_particles];
+	hVel = new float4[params.n_particles];
 
 	// alocate device memory
-	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float4) * n_particles));
-	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float4) * n_particles));
-	checkCudaErrors(cudaMalloc((void**) &dFor, sizeof(float4) * n_particles));
+	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float4) * params.n_particles));
+	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float4) * params.n_particles));
+	checkCudaErrors(cudaMalloc((void**) &dFor, sizeof(float4) * params.n_particles));
 	checkCudaErrors(cudaMemcpyToSymbol(&system_params, &params, sizeof(SysParams)));
 
 	contact->memInitialize();
@@ -102,7 +103,7 @@ void ParticleSystem::memInitialize(){
 
 void ParticleSystem::createParticles(){
 	float jitter = params.particle_radius*0.01;
-	unsigned int side = ceilf(powf(n_particles, 1.0/3.0));
+	unsigned int side = ceilf(powf(params.n_particles, 1.0/3.0));
 	unsigned int grid_size[3]; // quantidade de partículas por lado
 	float distance = params.particle_radius*2; // distância entre partículas
 
@@ -138,7 +139,7 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 			for(int x = 0; x < grid_size[0]; x++){
 				unsigned int i = (z*grid_size[1]*grid_size[0]) + (y*grid_size[0]) + x;
 
-				if(i < n_particles){
+				if(i < params.n_particles){
 					hPos[i].x = (distance * x) + params.particle_radius - 1.0f + (frand()*2.0-1.0)*jitter;
 					if(hPos[i].x > params.p_max.x)
 						params.p_max.x = hPos[i].x;
@@ -168,7 +169,7 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 }
 
 void ParticleSystem::randomizeVelocity(){
-	for(int i = 0; i < n_particles; i++){
+	for(int i = 0; i < params.n_particles; i++){
 		hVel[i].x = frand()*2.0 - 1.0;
 		hVel[i].y = frand()*2.0 - 1.0;
 		hVel[i].z = frand()*2.0 - 1.0;
@@ -177,8 +178,8 @@ void ParticleSystem::randomizeVelocity(){
 
 void ParticleSystem::dumpXYZ(){
 	if(f_out.is_open()){
-		f_out << n_particles << std::endl << std::endl;
-		for(int i = 0; i < n_particles; i++){
+		f_out << params.n_particles << std::endl << std::endl;
+		for(int i = 0; i < params.n_particles; i++){
 			f_out << i << " " << hPos[i].x << " " << hPos[i].y << " " << hPos[i].z << std::endl;
 		}
 	}

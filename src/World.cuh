@@ -18,6 +18,14 @@ public:
 	__device__
 	static void checkBoudaries(float4* pos, float4* vel);
 
+	/** Calculates the resulting force from two particles
+	 * contact
+	 */
+	__device__
+	static float3 contactForce(float4 posA, float4 posB,
+			float3 velA, float3 velB,
+	        float radiusA, float radiusB);
+
 };
 
 #endif /* WORLD_H_ */

@@ -6,6 +6,7 @@
 #include "helper_cuda.h"
 #include "helper_math.h"
 #include "World.cuh"
+#include "aux.h"
 
 __constant__
 SysParams system_params;

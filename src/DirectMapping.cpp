@@ -32,7 +32,7 @@ void DirectMapping::createNeighboorList(float4 *dPos){
 
 }
 
-void DirectMapping::calculateContactForce(){
+void DirectMapping::calculateContactForce(float4 *dPos, float4 *dFor){
 
 }
 

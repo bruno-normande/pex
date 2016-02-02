@@ -9,7 +9,6 @@
 #define PARTICLESYSTEM_H_
 
 #include <algorithm>
-#include <math.h>
 #include <string>
 #include <fstream>
 
@@ -22,6 +21,7 @@ struct SysParams{
 	float3 gravity;
 	float dt;
 
+	int n_particles;
 	float particle_radius;
 	float3 p_max; // Max x, y, z
 	float3 p_min; // Min x, y, z
@@ -67,13 +67,6 @@ public:
 	/** Set output file */
 	void setOutputFile(std::string file_name);
 
-	inline void computeGridSize(unsigned int n, unsigned int block_size,
-						unsigned int *n_blocks, unsigned int *n_threads)
-	{
-		*n_threads = std::min(block_size, n);
-		*n_blocks = ceil((float)n/(float)(*n_threads));
-	}
-
 protected:
 	float4 *hPos;
 	float4 *dPos;
@@ -84,8 +77,6 @@ protected:
 	SysParams params;
 
 	SystemType type;
-
-	unsigned int n_particles;
 
 	std::ofstream f_out;
 
