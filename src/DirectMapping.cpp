@@ -10,14 +10,9 @@
 #include <cuda.h>
 #include "helper_cuda.h"
 
-DirectMapping::DirectMapping(float3 pMax, float3 pMin, float d, unsigned int n_particle) :
+DirectMapping::DirectMapping(unsigned int n_particle) :
 	dGrid(NULL), dList(NULL), n_particle(n_particle)
-{
-	griDim.x = ceil( (pMax.x - pMin.x) / d);
-	griDim.y = ceil( (pMax.y - pMin.y) / d);
-	griDim.z = ceil( (pMax.z - pMin.z) / d);
-
-}
+{}
 
 DirectMapping::~DirectMapping() {
 	if(dGrid)
@@ -41,8 +36,9 @@ void DirectMapping::calculateContactForce(){
 
 }
 
-void DirectMapping::setPMin(float3 pMin){
-
+void DirectMapping::setMinMax(float3 pMin, float3 pMax){
+	griDim.x = ceil( (pMax.x - pMin.x) / d);
+	griDim.y = ceil( (pMax.y - pMin.y) / d);
+	griDim.z = ceil( (pMax.z - pMin.z) / d);
 }
-	void setPMax(float3 pMax);
 

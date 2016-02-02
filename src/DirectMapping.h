@@ -19,8 +19,7 @@ public:
 	void createNeighboorList(float4 *dPos);
 	void calculateContactForce();
 
-	void setPMin(float3 pMin);
-	void setPMax(float3 pMax);
+	void setMinMax(float3 pMin, float3 pMax);
 
 protected:
 	int3 gridDim;

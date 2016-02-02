@@ -19,8 +19,8 @@ public:
 
 	// Colocar para receber ponteiro dFor
 	virtual void calculateContactForce() = 0;
-	virtual void setPMin(float3 pMin) = 0;
-	virtual void setPMax(float3 pMax) = 0;
+
+	virtual void setMinMax(float3 pMin, float3 pMax) = 0;
 };
 
 #endif /* CONTACTDETECTION_H_ */

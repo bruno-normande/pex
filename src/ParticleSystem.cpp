@@ -40,7 +40,7 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 
 	switch (neigh_alg) {
 		case DM:
-			contact = new DirectMapping();
+			contact = new DirectMapping(n_particles);
 			break;
 		default:
 			break;
@@ -62,6 +62,7 @@ ParticleSystem::~ParticleSystem() {
 
 void ParticleSystem::run(){
 
+	contact->setMinMax(params.p_min, params.p_max);
 	memInitialize();
 	createParticles();
 
