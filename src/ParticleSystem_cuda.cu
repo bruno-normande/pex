@@ -12,13 +12,13 @@ __constant__
 SysParams system_params;
 
 __global__
-void integrate_system(float4 *pos, float4 *vel, unsigned int n_particles)
+void integrate_system(float4 *pos, float4 *vel, float4 *force, unsigned int n_particles)
 {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	
 	if(idx>=n_particles) return; 
 
-	float3 vel_f = make_float3(*vel);
+	float3 vel_f = make_float3(vel[idx] + force[idx]);
 	vel_f += system_params.gravity*system_params.dt;
 	vel_f *= system_params.global_damping;
 
@@ -32,7 +32,7 @@ void integrate_system(float4 *pos, float4 *vel, unsigned int n_particles)
 void ParticleSystem::integrate(){
 	unsigned int n_threads, n_blocks;
 	computeGridSize(n_particles,256, &n_blocks, &n_threads);
-	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, n_particles);
+	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dFor, n_particles);
 }
 
 void ParticleSystem::copyParticlesToDevice(){
