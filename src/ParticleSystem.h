@@ -15,7 +15,7 @@
 #include "ContactDetection.h"
 
 enum SystemType { DENSE, SPARSE, FLUID };
-enum NeighboorAlg { DM };
+enum NeighboorAlg { DM, DC };
 
 struct SysParams{
 	float3 gravity;

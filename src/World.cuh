@@ -22,7 +22,7 @@ public:
 	 * contact
 	 */
 	__device__
-	static float3 contactForce(float4 posA, float4 posB,
+	static float3 contactForce(float3 posA, float3 posB,
 			float3 velA, float3 velB,
 	        float radiusA, float radiusB);
 

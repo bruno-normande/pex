@@ -15,6 +15,7 @@
 #include "ParticleSystem.h"
 #include "ParticleSystem.cuh"
 #include "DirectMapping.h"
+#include "DirectChecking.h"
 
 inline float frand()
 {
@@ -40,9 +41,10 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 
 	switch (neigh_alg) {
 		case DM:
-			contact = new DirectMapping(n_particles);
+			contact = new DirectMapping(n_particles, params);
 			break;
 		default:
+			contact = new DirectChecking(n_particles);
 			break;
 	}
 }
@@ -75,7 +77,7 @@ void ParticleSystem::run(){
 		contact->createNeighboorList(dPos);
 
 		// calculate forces
-		contact->calculateContactForce(dPos, dFor);
+		contact->calculateContactForce(dPos, dVel, dFor);
 
 		if(i%5){
 			copyParticlesToHost();

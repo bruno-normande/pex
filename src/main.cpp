@@ -22,7 +22,8 @@ int main(int argc, char **argv) {
 	desc.add_options()
 			("help,h", "Produces help message")
 			("file,f", po::value<std::string>(), "Output file")
-			(",n", po::value<unsigned int>(), "Output file");
+			(",n", po::value<unsigned int>(), "Particle number")
+			("algorithm,a", po::value<std::string>(), "Contact Detection algorithm");
 
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc,argv,desc), vm);
@@ -37,7 +38,14 @@ int main(int argc, char **argv) {
 		//std::cout << vm << std::endl;
 		n_particles = vm["-n"].as<unsigned int>();
 	}
-	ParticleSystem *system = new ParticleSystem(n_particles);
+	NeighboorAlg neighAlg = DM;
+        if(vm.count("algorithm")){
+                std::string alg = vm["algorithm"].as<std::string>();
+                if(alg=="DC") neighAlg = DC;
+        }
+
+
+	ParticleSystem *system = new ParticleSystem(n_particles, neighAlg);
 
 	std::cout << "Starting simulation..." << std::endl << "N = " << n_particles << std::endl;
 	std::string out_file;
@@ -46,6 +54,7 @@ int main(int argc, char **argv) {
 		system->setOutputFile(out_file);
 		std::cout << "Output = " << out_file << std::endl;
 	}
+
 	system->run();
 	system->cleanUp();
 

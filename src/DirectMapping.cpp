@@ -7,12 +7,15 @@
 
 #include "DirectMapping.h"
 
-#include <cuda.h>
+#include <cuda_runtime.h>
 #include "helper_cuda.h"
+#include "ParticleSystem.h"
 
-DirectMapping::DirectMapping(unsigned int n_particle) :
-	dGrid(NULL), dList(NULL), n_particle(n_particle)
-{}
+DirectMapping::DirectMapping(unsigned int n_particle, SysParams params) :
+	dGrid(NULL), dList(NULL), n_particles(n_particle)
+{
+	d = params.particle_radius;
+}
 
 DirectMapping::~DirectMapping() {
 	if(dGrid)
@@ -32,13 +35,13 @@ void DirectMapping::createNeighboorList(float4 *dPos){
 
 }
 
-void DirectMapping::calculateContactForce(float4 *dPos, float4 *dFor){
+void DirectMapping::calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor){
 
 }
 
 void DirectMapping::setMinMax(float3 pMin, float3 pMax){
-	griDim.x = ceil( (pMax.x - pMin.x) / d);
-	griDim.y = ceil( (pMax.y - pMin.y) / d);
-	griDim.z = ceil( (pMax.z - pMin.z) / d);
+	gridDim.x = ceil( (pMax.x - pMin.x) / d);
+	gridDim.y = ceil( (pMax.y - pMin.y) / d);
+	gridDim.z = ceil( (pMax.z - pMin.z) / d);
 }
 

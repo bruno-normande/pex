@@ -21,7 +21,7 @@ void World::checkBoudaries(float4* pos, float4* vel)
 }
 
 __device__
-float3 World::contactForce(float4 posA, float4 posB,
+float3 World::contactForce(float3 posA, float3 posB,
 		float3 velA, float3 velB,
         float radiusA, float radiusB)
 {
@@ -41,12 +41,12 @@ float3 World::contactForce(float4 posA, float4 posB,
 		// relative tangential velocity
 		float3 tanVel = relVel - (dot(relVel, norm) * norm);
 
-		// spring force
-		force = -params.spring*(collideDist - dist) * norm;
+		// spring force // spring = 0.5
+		force = -0.5*(collideDist - dist) * norm;
 		// dashpot (damping) force
-		force += params.damping*relVel;
-		// tangential shear force
-		force += params.shear*tanVel;
+		force += system_params.global_damping*relVel;
+		// tangential shear force //shear = 0.1
+		force += 0.1*tanVel;
 
 	}
 

@@ -9,10 +9,11 @@
 #define DIRECTMAPPING_H_
 
 #include "ContactDetection.h"
+#include "ParticleSystem.h"
 
 class DirectMapping : public ContactDetection {
 public:
-	DirectMapping( unsigned int n_particle);
+	DirectMapping( unsigned int n_particle, SysParams params);
 	virtual ~DirectMapping();
 
 	void memInitialize();
@@ -23,7 +24,8 @@ public:
 
 protected:
 	int3 gridDim;
-	unsigned int n_particle;
+	unsigned int n_particles;
+	float d;
 
 	int *dGrid; // stores lists heads
 	int *dList; // stores grid's lists

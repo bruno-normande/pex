@@ -31,22 +31,22 @@ void integrate_system(float4 *pos, float4 *vel, float4 *force, unsigned int n_pa
 
 void ParticleSystem::integrate(){
 	unsigned int n_threads, n_blocks;
-	computeGridSize(n_particles,256, &n_blocks, &n_threads);
-	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dFor, n_particles);
+	computeGridSize(params.n_particles,256, &n_blocks, &n_threads);
+	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dFor, params.n_particles);
 }
 
 void ParticleSystem::copyParticlesToDevice(){
-        checkCudaErrors(cudaMemcpy(dPos, hPos, sizeof(float4)*n_particles,
+        checkCudaErrors(cudaMemcpy(dPos, hPos, sizeof(float4)*params.n_particles,
         							cudaMemcpyHostToDevice));
-        checkCudaErrors(cudaMemcpy(dVel, hVel, sizeof(float4)*n_particles,
+        checkCudaErrors(cudaMemcpy(dVel, hVel, sizeof(float4)*params.n_particles,
         							cudaMemcpyHostToDevice));
 
 }
 
 void ParticleSystem::copyParticlesToHost(){
-        checkCudaErrors(cudaMemcpy(hPos, dPos, sizeof(float4)*n_particles,
+        checkCudaErrors(cudaMemcpy(hPos, dPos, sizeof(float4)*params.n_particles,
         							cudaMemcpyDeviceToHost));
-        checkCudaErrors(cudaMemcpy(hVel, dVel, sizeof(float4)*n_particles,
+        checkCudaErrors(cudaMemcpy(hVel, dVel, sizeof(float4)*params.n_particles,
         							cudaMemcpyDeviceToHost));
 
 }

@@ -8,6 +8,11 @@
 #ifndef CONTACTDETECTION_H_
 #define CONTACTDETECTION_H_
 
+#include <cstdlib>
+#include <cstdio>
+
+#include "helper_math.h"
+
 class ContactDetection {
 public:
 	ContactDetection(){}
