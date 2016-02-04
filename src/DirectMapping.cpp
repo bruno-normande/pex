@@ -45,3 +45,7 @@ void DirectMapping::setMinMax(float3 pMin, float3 pMax){
 	gridDim.z = ceil( (pMax.z - pMin.z) / d);
 }
 
+std::string DirectMapping::getName(){
+	return string("Direct Mapping");
+}
+

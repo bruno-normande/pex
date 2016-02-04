@@ -10,6 +10,7 @@
 
 #include <cstdlib>
 #include <cstdio>
+#include <string>
 
 #include "helper_math.h"
 
@@ -26,6 +27,8 @@ public:
 	virtual void calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor) = 0;
 
 	virtual void setMinMax(float3 pMin, float3 pMax) = 0;
+
+	virtual std::string getName() = 0;
 };
 
 #endif /* CONTACTDETECTION_H_ */

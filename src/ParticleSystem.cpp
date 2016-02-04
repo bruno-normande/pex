@@ -62,13 +62,18 @@ ParticleSystem::~ParticleSystem() {
 		cudaFree(dFor);
 }
 
-void ParticleSystem::run(){
+float ParticleSystem::run(){
 
 	contact->setMinMax(params.p_min, params.p_max);
 	memInitialize();
 	createParticles();
 
 	copyParticlesToDevice();
+
+	cudaEvent_t start, stop;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start);
 	for(int i = 0; i < 500; i++){
 
 		integrate();
@@ -84,8 +89,13 @@ void ParticleSystem::run(){
 			dumpXYZ();
 		}
 	}
+	cudaEventRecord(stop);
 	dumpXYZ();
 
+	cudaEventSynchronize(stop);
+	float milliseconds = 0;
+	cudaEventElapsedTime(&milliseconds, start, stop);
+	return milliseconds;
 }
 
 void ParticleSystem::memInitialize(){
@@ -147,11 +157,13 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 						params.p_max.x = hPos[i].x;
 					if(hPos[i].x < params.p_min.x)
 						params.p_min.x = hPos[i].x;
+
 					hPos[i].y = (distance * y) + params.particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
 					if(hPos[i].y > params.p_max.y)
 						params.p_max.y = hPos[i].y;
 					if(hPos[i].y < params.p_min.y)
 						params.p_min.y = hPos[i].y;
+
 					hPos[i].z = (distance * z) + params.particle_radius - 0.9f + (frand()*2.0f-1.0f)*jitter;
 					if(hPos[i].z > params.p_max.z)
 						params.p_max.z = hPos[i].z;
@@ -199,6 +211,10 @@ void ParticleSystem::setOutputFile(std::string file_name){
 	}
 	if(!file_name.empty())
 		f_out.open(file_name.c_str());
+}
+
+void ParticleSystem::printInfo(){
+	std::cout << "Alg: " << contact->getName() << std::endl;
 }
 
 

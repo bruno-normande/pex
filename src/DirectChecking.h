@@ -23,6 +23,8 @@ public:
 	void calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor);
 
 	void setMinMax(float3 pMin, float3 pMax){}
+
+	inline std::string getName(){return std::string("Direct Checking");}
 protected:
 	unsigned int n_particles;
 };

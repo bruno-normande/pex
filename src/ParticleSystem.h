@@ -37,7 +37,7 @@ public:
 	virtual ~ParticleSystem();
 
 	/** Run simulation */
-	void run();
+	float run();
 	/** Initialize system memory */
 	void memInitialize();
 
@@ -66,6 +66,8 @@ public:
 
 	/** Set output file */
 	void setOutputFile(std::string file_name);
+
+	void printInfo();
 
 protected:
 	float4 *hPos;

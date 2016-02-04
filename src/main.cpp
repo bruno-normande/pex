@@ -55,8 +55,13 @@ int main(int argc, char **argv) {
 		std::cout << "Output = " << out_file << std::endl;
 	}
 
-	system->run();
+	float total_time;
+
+	system->printInfo();
+	total_time = system->run();
 	system->cleanUp();
+
+	std::cout << "Total time = " << total_time << std::endl;
 
 	//TODO Fazer grid-size relatico a quantidade de partículas e a
 	// 		tipo de simulação por linha de comando
