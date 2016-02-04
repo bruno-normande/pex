@@ -8,16 +8,50 @@
 #include "World.cuh"
 #include "ParticleSystem.cuh"
 #include "helper_math.h"
+#include "ParticleSystem.h"
+
+extern __constant__
+SysParams system_params;
 
 __device__
 void World::checkBoudaries(float4* pos, float4* vel)
 {
-	// inicialmente vamos apenas impedir as particulas de passarem
-	// pelo chão
-	if(pos->z < -1.0){
-		pos->z = -1.0 + system_params.particle_radius;
-		vel->z *= system_params.boundarie_damping;
+	// impede as partículas de passarem pelas bordas
+	if (pos.x > system_params.p_max.x - params.particleRadius)
+	{
+		pos.x = system_params.p_max.x - params.particleRadius;
+		vel.x *= params.boundaryDamping;
 	}
+
+	if (pos.x < system_params.p_min.x + params.particleRadius)
+	{
+		pos.x = system_params.p_min.x + params.particleRadius;
+		vel.x *= params.boundaryDamping;
+	}
+
+	if (pos.y > system_params.p_max.y - params.particleRadius)
+	{
+		pos.y = system_params.p_max.y - params.particleRadius;
+		vel.y *= params.boundaryDamping;
+	}
+	if (pos.y < system_params.p_min.y + params.particleRadius)
+	{
+		pos.y = system_params.p_min.y + params.particleRadius;
+		vel.y *= params.boundaryDamping;
+	}
+
+	if (pos.z > system_params.p_max.z - params.particleRadius)
+	{
+		pos.z = system_params.p_max.z - params.particleRadius;
+		vel.z *= params.boundaryDamping;
+	}
+
+	if (pos.z < system_params.p_min.z + params.particleRadius)
+	{
+		pos.z = system_params.p_min.z + params.particleRadius;
+		vel.z *= params.boundaryDamping;
+	}
+
 }
 
 __device__

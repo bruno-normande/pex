@@ -182,6 +182,12 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 			}
 		}
 	}
+	params.p_max.x += distance;
+	params.p_max.y += distance;
+	params.p_max.z += distance;
+	params.p_min.x -= distance;
+	params.p_min.y -= distance;
+	params.p_min.z -= distance;
 }
 
 void ParticleSystem::randomizeVelocity(){
