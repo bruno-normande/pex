@@ -69,7 +69,7 @@ void ParticleSystem::run(){
 	createParticles();
 
 	copyParticlesToDevice();
-	for(int i = 0; i < 100; i++){
+	for(int i = 0; i < 500; i++){
 
 		integrate();
 
@@ -79,7 +79,7 @@ void ParticleSystem::run(){
 		// calculate forces
 		contact->calculateContactForce(dPos, dVel, dFor);
 
-		if(i%5){
+		if(i%5 == 0){
 			copyParticlesToHost();
 			dumpXYZ();
 		}

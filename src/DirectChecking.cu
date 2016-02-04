@@ -26,7 +26,8 @@ void calculate_contact_force(float4 *dPos, float4 *dVel, float4 *dFor, unsigned 
         float3 position = make_float3(dPos[idx]);
         float3 velocity = make_float3(dVel[idx]);
         for(int i = 0; i < n_particles; i++){
-                force += World::contactForce(position, make_float3(dPos[i]), velocity, make_float3(dVel[i]), r, r);
+                if(i != idx)
+                    force += World::contactForce(position, make_float3(dPos[i]), velocity, make_float3(dVel[i]), r, r);
         }
         dFor[idx] = make_float4(force, 0);
 }
