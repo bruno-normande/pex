@@ -77,8 +77,8 @@ float3 World::contactForce(float3 posA, float3 posB,
 
 		// spring force // spring = 0.5
 		force = -0.5*(collideDist - dist) * norm;
-		// dashpot (damping) force
-		force += system_params.global_damping*relVel;
+		// dashpot (damping) force // damping = 0.02
+		force += 0.02*relVel;
 		// tangential shear force //shear = 0.1
 		force += 0.1*tanVel;
 
