@@ -28,6 +28,9 @@ struct SysParams{
 
 	float boundary_damping;
 	float global_damping;
+	float damping;
+	float shear;
+	float spring;
 
 };
 

@@ -75,12 +75,12 @@ float3 World::contactForce(float3 posA, float3 posB,
 		// relative tangential velocity
 		float3 tanVel = relVel - (dot(relVel, norm) * norm);
 
-		// spring force // spring = 0.5
-		force = -0.5*(collideDist - dist) * norm;
+		// spring force
+		force = system_params.spring*(collideDist - dist) * norm;
 		// dashpot (damping) force // damping = 0.02
-		force += 0.02*relVel;
-		// tangential shear force //shear = 0.1
-		force += 0.1*tanVel;
+		force += system_params.damping*relVel;
+		// tangential shear force
+		force += system_params.shear*tanVel;
 
 	}
 

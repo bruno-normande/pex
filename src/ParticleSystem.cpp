@@ -35,6 +35,9 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 	params.dt = 0.01;
 	params.boundary_damping = -0.5;
 	params.global_damping = 0.9; // 1.0 what's damping? 0,02
+	params.damping = 0.02;
+	params.spring = -0.5;
+	params.shear = 0.1;
 	params.gravity = make_float3(0.0, 0.0, -0.0003);
 	params.p_max = make_float3(-99.-99,-99.0,0.0);
 	params.p_min = make_float3(99.0,99.0,99.0);
