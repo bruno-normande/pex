@@ -31,13 +31,13 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 	type = DENSE; // default
 
 	params.n_particles = n_particles;
-	params.particle_radius = 1.0/64.0;
+	params.particle_radius = 1.0/32.0;
 	params.dt = 0.1;
 	params.boundary_damping = -0.5;
-	params.global_damping = 1.0;
+	params.global_damping = 0.9;
 	params.gravity = make_float3(0.0, 0.0, -0.09);
-	params.p_max = make_float3(0.0,0.0,0.0);
-	params.p_min = make_float3(0.0,0.0,0.0);
+	params.p_max = make_float3(-99.-99,-99.0,0.0);
+	params.p_min = make_float3(99.0,99.0,99.0);
 
 	switch (neigh_alg) {
 		case DM:
@@ -155,19 +155,19 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 				unsigned int i = (z*grid_size[1]*grid_size[0]) + (y*grid_size[0]) + x;
 
 				if(i < params.n_particles){
-					hPos[i].x = (distance * x) + params.particle_radius - 1.0f + (frand()*2.0-1.0)*jitter;
+					hPos[i].x = (distance * x) + params.particle_radius + (frand()*2.0-1.0)*jitter;
 					if(hPos[i].x > params.p_max.x)
 						params.p_max.x = hPos[i].x;
 					if(hPos[i].x < params.p_min.x)
 						params.p_min.x = hPos[i].x;
 
-					hPos[i].y = (distance * y) + params.particle_radius - 1.0f + (frand()*2.0f-1.0f)*jitter;
+					hPos[i].y = (distance * y) + params.particle_radius + (frand()*2.0f-1.0f)*jitter;
 					if(hPos[i].y > params.p_max.y)
 						params.p_max.y = hPos[i].y;
 					if(hPos[i].y < params.p_min.y)
 						params.p_min.y = hPos[i].y;
 
-					hPos[i].z = (distance * z) + params.particle_radius - 0.9f + (frand()*2.0f-1.0f)*jitter;
+					hPos[i].z = (distance * z) + params.particle_radius + (frand()*2.0f-1.0f)*jitter;
 					if(hPos[i].z > params.p_max.z)
 						params.p_max.z = hPos[i].z;
 					if(hPos[i].z < params.p_min.z)
