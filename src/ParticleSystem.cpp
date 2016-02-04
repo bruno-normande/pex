@@ -87,6 +87,8 @@ float ParticleSystem::run(){
 		if(i%5 == 0){
 			copyParticlesToHost();
 			dumpXYZ();
+
+			std::cout << 1.0*100/i << "%" << std::endl;
 		}
 	}
 	cudaEventRecord(stop);
