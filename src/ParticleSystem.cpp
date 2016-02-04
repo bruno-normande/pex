@@ -33,7 +33,7 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 	params.n_particles = n_particles;
 	params.particle_radius = 1.0/64.0;
 	params.dt = 0.1;
-	params.boundarie_damping = -0.5;
+	params.boundary_damping = -0.5;
 	params.global_damping = 1.0;
 	params.gravity = make_float3(0.0, 0.0, -0.09);
 	params.p_max = make_float3(0.0,0.0,0.0);
@@ -64,11 +64,14 @@ ParticleSystem::~ParticleSystem() {
 
 float ParticleSystem::run(){
 	int t_steps = 500;
-	contact->setMinMax(params.p_min, params.p_max);
-	memInitialize();
-	createParticles();
 
-	copyParticlesToDevice();
+        memInitialize();
+	createParticles(); //has to come before anny device mem copy
+	checkCudaErrors(cudaMemcpyToSymbol(&system_params, &params, sizeof(SysParams)));
+        contact->setMinMax(params.p_min, params.p_max);
+
+	contact->memInitialize();
+        copyParticlesToDevice();
 
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
@@ -110,9 +113,7 @@ void ParticleSystem::memInitialize(){
 	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float4) * params.n_particles));
 	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float4) * params.n_particles));
 	checkCudaErrors(cudaMalloc((void**) &dFor, sizeof(float4) * params.n_particles));
-	checkCudaErrors(cudaMemcpyToSymbol(&system_params, &params, sizeof(SysParams)));
 
-	contact->memInitialize();
 }
 
 void ParticleSystem::createParticles(){

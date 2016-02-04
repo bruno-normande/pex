@@ -26,7 +26,7 @@ struct SysParams{
 	float3 p_max; // Max x, y, z
 	float3 p_min; // Min x, y, z
 
-	float boundarie_damping;
+	float boundary_damping;
 	float global_damping;
 
 };
