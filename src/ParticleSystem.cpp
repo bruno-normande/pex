@@ -63,7 +63,7 @@ ParticleSystem::~ParticleSystem() {
 }
 
 float ParticleSystem::run(){
-
+	int t_steps = 500;
 	contact->setMinMax(params.p_min, params.p_max);
 	memInitialize();
 	createParticles();
@@ -74,7 +74,7 @@ float ParticleSystem::run(){
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
-	for(int i = 0; i < 500; i++){
+	for(int i = 0; i < t_steps; i++){
 
 		integrate();
 
@@ -88,7 +88,7 @@ float ParticleSystem::run(){
 			copyParticlesToHost();
 			dumpXYZ();
 
-			std::cout << 1.0*100/i << "%" << std::endl;
+			std::cout << 100.0*i/t_steps << "%" << std::endl;
 		}
 	}
 	cudaEventRecord(stop);

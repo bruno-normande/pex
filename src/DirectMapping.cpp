@@ -46,6 +46,6 @@ void DirectMapping::setMinMax(float3 pMin, float3 pMax){
 }
 
 std::string DirectMapping::getName(){
-	return string("Direct Mapping");
+	return std::string("Direct Mapping");
 }
 
