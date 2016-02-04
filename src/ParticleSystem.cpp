@@ -32,7 +32,7 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 
 	params.n_particles = n_particles;
 	params.particle_radius = 1.0/32.0;
-	params.dt = 0.1;
+	params.dt = 0.01;
 	params.boundary_damping = -0.5;
 	params.global_damping = 0.9;
 	params.gravity = make_float3(0.0, 0.0, -0.09);
@@ -77,6 +77,8 @@ float ParticleSystem::run(){
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
+        
+        dumpXYZ();
 	for(int i = 0; i < t_steps; i++){
 
 		integrate();
@@ -87,15 +89,16 @@ float ParticleSystem::run(){
 		// calculate forces
 		contact->calculateContactForce(dPos, dVel, dFor);
 
-		if(i%5 == 0){
+		if(i%1 == 0){
 			copyParticlesToHost();
 			dumpXYZ();
 
-			std::cout << 100.0*i/t_steps << "%" << std::endl;
+			std::cout << 100.0*i/t_steps << "% " << std::flush;
 		}
 	}
 	cudaEventRecord(stop);
 	dumpXYZ();
+        std::cout << std::endl;
 
 	cudaEventSynchronize(stop);
 	float milliseconds = 0;
@@ -189,6 +192,8 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 	params.p_min.x -= distance;
 	params.p_min.y -= distance;
 	params.p_min.z -= distance;
+	std::cout << "PMAX= (" << params.p_max.x <<", " << params.p_max.y << ", " << params.p_max.z << ")" << std::endl;
+	std::cout << "PMAX= (" << params.p_min.x <<", " << params.p_min.y << ", " << params.p_min.z << ")" << std::endl;
 }
 
 void ParticleSystem::randomizeVelocity(){
