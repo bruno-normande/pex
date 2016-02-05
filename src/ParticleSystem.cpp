@@ -32,13 +32,13 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 
 	params.n_particles = n_particles;
 	params.particle_radius = 1.0/64.0;
-	params.dt = 0.01;
+	params.dt = 0.1;
 	params.boundary_damping = -0.5;
 	params.global_damping = 0.9; // 1.0 what's damping? 0,02
 	params.damping = 0.02;
 	params.spring = -0.5;
 	params.shear = 0.1;
-	params.gravity = make_float3(0.0, 0.0, -0.0003);
+	params.gravity = make_float3(0.0, 0.0, -0.003);
 	params.p_max = make_float3(-99.-99,-99.0,0.0);
 	params.p_min = make_float3(99.0,99.0,99.0);
 
@@ -66,7 +66,7 @@ ParticleSystem::~ParticleSystem() {
 }
 
 float ParticleSystem::run(){
-	int t_steps = 500;
+	int t_steps = 2500;
 
         memInitialize();
 	createParticles(); //has to come before anny device mem copy
@@ -92,12 +92,14 @@ float ParticleSystem::run(){
 		// calculate forces
 		contact->calculateContactForce(dPos, dVel, dFor);
 
-		if(i%1 == 0){
+		if(i%10 == 0){
 			copyParticlesToHost();
 			dumpXYZ();
 
-			std::cout << 100.0*i/t_steps << "% " << std::flush;
 		}
+                if(i%(t_steps/20)==0){
+			std::cout << 100.0*i/t_steps << "% " << std::flush;
+                } 
 	}
 	cudaEventRecord(stop);
 	dumpXYZ();
