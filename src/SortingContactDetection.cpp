@@ -6,6 +6,10 @@
  */
 
 #include "SortingContactDetection.h"
+#include "helper_math.h"
+
+#include <cuda.h>
+#include "helper_cuda.h"
 
 SortingContactDetection::SortingContactDetection() :
 	dSortedPos(NULL), dSortedVel(NULL),
@@ -16,7 +20,7 @@ SortingContactDetection::SortingContactDetection() :
 	gridSortBits = 18;    // increase this for larger grids ??
 	p_max = make_float3(0);
 	p_min = make_float3(0);
-	gridSize = make_float3(0);
+	gridSize = make_int3(0);
 
 }
 
@@ -57,7 +61,7 @@ void SortingContactDetection::createNeighboorList(float4 *dPos, float4 *dVel){
 	sortParticles();
 
 	// reorder data and find cell start
-	reorderAndSetStart(dPos);
+	reorderAndSetStart(dPos, dVel);
 }
 
 void SortingContactDetection::setParams(SysParams params){

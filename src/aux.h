@@ -10,6 +10,26 @@
 
 #include <math.h>
 
+enum SystemType { DENSE, SPARSE, FLUID };
+enum NeighboorAlg { DM, DC, SCD };
+
+struct SysParams{
+        float3 gravity;
+        float dt;
+
+        int n_particles;
+        float particle_radius;
+        float3 p_max; // Max x, y, z
+        float3 p_min; // Min x, y, z
+
+        float boundary_damping;
+        float global_damping;
+        float damping;
+        float shear;
+        float spring;
+
+};
+
 inline void computeGridSize(unsigned int n, unsigned int block_size,
 						unsigned int *n_blocks, unsigned int *n_threads)
 {

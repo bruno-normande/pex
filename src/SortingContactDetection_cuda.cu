@@ -8,6 +8,8 @@
 #include "SortingContactDetection.h"
 #include "aux.h"
 #include "helper_cuda.h"
+#include "helper_math.h"
+#include "World.cuh"
 
 #include <cuda.h>
 #include <thrust/sort.h>
@@ -25,13 +27,13 @@ unsigned int makeHash(int3 pos){
 
 __global__
 void calc_hash(unsigned int *dGridParticleHash, unsigned int *dGridParticleIndex,
-		float4 *dPos, unsigned int n_particles, float4 p_min, float d){
+		float4 *dPos, unsigned int n_particles, float3 p_min, float d){
 
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
 	if(idx>=n_particles) return;
 
-	int3 gridPos = get_grid_pos(dPos[idx], p_min, d);
+	int3 gridPos = get_grid_pos(make_float3(dPos[idx]), p_min, d);
 	unsigned int hash = makeHash(gridPos);
 
 	dGridParticleHash[idx] = hash;
@@ -58,8 +60,8 @@ void SortingContactDetection::sortParticles(){
 
 __global__
 void reorder_and_find_cell_start(unsigned int *cellStart, unsigned int *cellEnd,
-        float *sortedPos, float *sortedVel, unsigned int *gridParticleHash,
-        unsigned int *gridParticleIndex, float *oldPos, float4 *oldVel,
+        float4 *sortedPos, float4 *sortedVel, unsigned int *gridParticleHash,
+        unsigned int *gridParticleIndex, float4 *oldPos, float4 *oldVel,
         unsigned int n_particles)
 {
 	extern __shared__ unsigned int sharedHash[]; //TODO: Alocar e desalocar
@@ -67,7 +69,7 @@ void reorder_and_find_cell_start(unsigned int *cellStart, unsigned int *cellEnd,
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
 	unsigned int hash;
-	if(index < n_particles){
+	if(idx < n_particles){
 		hash = gridParticleHash[idx];
 
 		sharedHash[threadIdx.x + 1] = hash;
@@ -116,7 +118,7 @@ void SortingContactDetection::reorderAndSetStart(float4 *dPos, float4 *dVel){
 }
 
 __global__
-void calculate_contact_force(float4 *sortedPos, float4 sortedVel,
+void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 		unsigned int *gridParticleIndex, unsigned int *cellStart,
 		unsigned int *cellEnd, float4 *force, unsigned int n_particles,
 		float3 pMin, float d)
@@ -136,7 +138,7 @@ void calculate_contact_force(float4 *sortedPos, float4 sortedVel,
 	for(int z = -1; z <= 1; z++){
 		for(int y = -1; y <= 1; y++){
 			for(int x = -1; x <= 1; x++){
-				unsigned int hash =  makeHash(gridPos + make_float3(x,y,z));
+				unsigned int hash =  makeHash(gridPos + make_int3(x,y,z));
 				unsigned int start_idx = cellStart[hash];
 
 				if(start_idx != EMPTY){
