@@ -60,10 +60,6 @@ void SortingContactDetection::createNeighboorList(float4 *dPos, float4 *dVel){
 	reorderAndSetStart(dPos);
 }
 
-void SortingContactDetection::calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor){
-	// will not use dPos and dVel since i have my own version stored
-}
-
 void SortingContactDetection::setParams(SysParams params){
 	n_particles = params.n_particles;
 	p_max = params.p_max;

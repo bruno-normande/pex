@@ -13,6 +13,16 @@
 #include <thrust/sort.h>
 #include <thrust/device_ptr.h>
 
+#define EMPTY 0xffffffff
+
+extern __constant__
+SysParams system_params;
+
+__device__
+unsigned int makeHash(int3 pos){
+	return pos.x*pos.y*pos.z + pos.x*pos.y + pos.x;
+}
+
 __global__
 void calc_hash(unsigned int *dGridParticleHash, unsigned int *dGridParticleIndex,
 		float4 *dPos, unsigned int n_particles, float4 p_min, float d){
@@ -22,7 +32,7 @@ void calc_hash(unsigned int *dGridParticleHash, unsigned int *dGridParticleIndex
 	if(idx>=n_particles) return;
 
 	int3 gridPos = get_grid_pos(dPos[idx], p_min, d);
-	unsigned int hash = gridPos.x*gridPos.y*gridPos.z + gridPos.x*gridPos.y + gridPos.x;
+	unsigned int hash = makeHash(gridPos);
 
 	dGridParticleHash[idx] = hash;
 	dGridParticleIndex[idx] = idx;
@@ -37,7 +47,7 @@ void SortingContactDetection::calcHash(float4 *dPos){
 	calc_hash<<<numBlocks, numThreads>>>(dGridParticleHash, dGridParticleIndex,
 			dPos, n_particles, p_min, d);
 
-	getLastCudaError("Kernel execution failed");
+	getLastCudaError("Kernel execution failed: calc_hash");
 }
 
 void SortingContactDetection::sortParticles(){
@@ -94,19 +104,67 @@ void SortingContactDetection::reorderAndSetStart(float4 *dPos, float4 *dVel){
 	computeGridSize(n_particles, 256, &numBlocks, &numThreads);
 
 	unsigned int numCells = gridSize.x*gridSize.y*gridSize.z;
-	checkCudaErrors(cudaMemset(dCellStart, 0xffffffff, numCells*sizeof(uint)));
-	checkCudaErrors(cudaMemset(dCellEnd, 0xffffffff, numCells*sizeof(uint)));
+	checkCudaErrors(cudaMemset(dCellStart, EMPTY, numCells*sizeof(uint)));
+	checkCudaErrors(cudaMemset(dCellEnd, EMPTY, numCells*sizeof(uint)));
 
 	unsigned int shared_mem = sizeof(unsigned int)*(numThreads+1);
 	reorder_and_find_cell_start<<<numThreads, numBlocks, shared_mem>>>(dCellStart, dCellEnd,
 			dSortedPos, dSortedVel, dGridParticleHash, dGridParticleIndex, dPos,
 			dVel, n_particles);
 
-	getLastCudaError("Kernel execution failed");
+	getLastCudaError("Kernel execution failed: reorder_and_find_cell_start");
 }
 
+__global__
+void calculate_contact_force(float4 *sortedPos, float4 sortedVel,
+		unsigned int *gridParticleIndex, unsigned int *cellStart,
+		unsigned int *cellEnd, float4 *force, unsigned int n_particles,
+		float3 pMin, float d)
+{
+	int idx = blockIdx.x * blockDim.x + threadIdx.x;
+	if(idx >= n_particles) return;
 
+	float3 pos = make_float3(sortedPos[idx]);
+	float3 vel = make_float3(sortedVel[idx]);
 
+	int3 gridPos = get_grid_pos(pos, pMin, d);
+
+	float3 resulting_force = make_float3(0);
+
+	float r = system_params.particle_radius;
+
+	for(int z = -1; z <= 1; z++){
+		for(int y = -1; y <= 1; y++){
+			for(int x = -1; x <= 1; x++){
+				unsigned int hash =  makeHash(gridPos + make_float3(x,y,z));
+				unsigned int start_idx = cellStart[hash];
+
+				if(start_idx != EMPTY){
+					unsigned int end_idx = cellEnd[hash];
+
+					for(unsigned int i=start_idx; i< end_idx; i++){
+						if(i == idx) continue; // jumps self
+						float3 neigh_pos = make_float3(sortedPos[i]);
+						float3 neigh_vel = make_float3(sortedVel[i]);
+
+						resulting_force += World::contactForce(pos, neigh_pos,
+								vel, neigh_vel, r, r);
+					}
+				}
+			}
+		}
+	}
+}
+
+void SortingContactDetection::calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor){
+	// will not use dPos and dVel since i have my own version stored
+	unsigned int numThreads, numBlocks;
+	computeGridSize(n_particles, 256, &numBlocks, &numThreads);
+
+	calculate_contact_force<<<numThreads, numBlocks>>>(dSortedPos, dSortedVel,
+			dGridParticleIndex, dCellStart, dCellEnd, dFor, n_particles, p_min, d);
+	getLastCudaError("Kernel execution failed: calculate_contact_force");
+}
 
 
 
