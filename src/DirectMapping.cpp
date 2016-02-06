@@ -11,11 +11,9 @@
 #include "helper_cuda.h"
 #include "ParticleSystem.h"
 
-DirectMapping::DirectMapping(unsigned int n_particle, SysParams params) :
-	dGrid(NULL), dList(NULL), n_particles(n_particle)
-{
-	d = params.particle_radius;
-}
+DirectMapping::DirectMapping() :
+	dGrid(NULL), dList(NULL), d(0), n_particles(0)
+{ }
 
 DirectMapping::~DirectMapping() {
 	if(dGrid)
@@ -39,10 +37,12 @@ void DirectMapping::calculateContactForce(float4 *dPos, float4 *dVel, float4 *dF
 
 }
 
-void DirectMapping::setMinMax(float3 pMin, float3 pMax){
-	gridDim.x = ceil( (pMax.x - pMin.x) / d);
-	gridDim.y = ceil( (pMax.y - pMin.y) / d);
-	gridDim.z = ceil( (pMax.z - pMin.z) / d);
+void DirectMapping::setParams(SysParams params){
+	d = params.particle_radius;
+	n_particles = params.n_particles;
+	gridDim.x = ceil( (params.p_max.x - params.p_min.x) / d);
+	gridDim.y = ceil( (params.p_max.y - params.p_min.y) / d);
+	gridDim.z = ceil( (params.p_max.z - params.p_min.z) / d);
 }
 
 std::string DirectMapping::getName(){

@@ -17,6 +17,13 @@ inline void computeGridSize(unsigned int n, unsigned int block_size,
 	*n_blocks = ceil((float)n/(float)(*n_threads));
 }
 
-
+__device__
+inline int3 get_grid_pos(float3 pos, float3 p_min, float d){
+	int3 gridPos;
+	gridPos.x = floor( (pos.x - p_min.x) / d );
+	gridPos.y = floor( (pos.y - p_min.y) / d );
+	gridPos.z = floor( (pos.z - p_min.z) / d );
+	return gridPos;
+}
 
 #endif /* AUX_H_ */

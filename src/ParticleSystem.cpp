@@ -44,10 +44,10 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 
 	switch (neigh_alg) {
 		case DM:
-			contact = new DirectMapping(n_particles, params);
+			contact = new DirectMapping();
 			break;
 		default:
-			contact = new DirectChecking(n_particles);
+			contact = new DirectChecking();
 			break;
 	}
 }
@@ -71,23 +71,23 @@ float ParticleSystem::run(){
         memInitialize();
 	createParticles(); //has to come before anny device mem copy
 	checkCudaErrors(cudaMemcpyToSymbol(&system_params, &params, sizeof(SysParams)));
-        contact->setMinMax(params.p_min, params.p_max);
+	contact->setParams(params);
 
 	contact->memInitialize();
-        copyParticlesToDevice();
+	copyParticlesToDevice();
 
 	cudaEvent_t start, stop;
 	cudaEventCreate(&start);
 	cudaEventCreate(&stop);
 	cudaEventRecord(start);
         
-        dumpXYZ();
+	dumpXYZ();
 	for(int i = 0; i < t_steps; i++){
 
 		integrate();
 
 		// search for neighboors
-		contact->createNeighboorList(dPos);
+		contact->createNeighboorList(dPos, dVel);
 
 		// calculate forces
 		contact->calculateContactForce(dPos, dVel, dFor);
@@ -97,13 +97,13 @@ float ParticleSystem::run(){
 			dumpXYZ();
 
 		}
-                if(i%(t_steps/20)==0){
+		if(i%(t_steps/20)==0){
 			std::cout << 100.0*i/t_steps << "% " << std::flush;
-                } 
+		}
 	}
 	cudaEventRecord(stop);
 	dumpXYZ();
-        std::cout << std::endl;
+	std::cout << std::endl;
 
 	cudaEventSynchronize(stop);
 	float milliseconds = 0;

@@ -9,20 +9,21 @@
 #define DIRECTCHECKING_H_
 
 #include "ContactDetection.h"
+#include "ParticleSystem.h"
 
 class DirectChecking : public ContactDetection {
 public:
-	DirectChecking(unsigned int n_particles):n_particles(n_particles){}
+	DirectChecking():n_particles(0){}
 	virtual ~DirectChecking(){}
 
 	void memInitialize(){}
 
-	void createNeighboorList(float4 *dPos){}
+	void createNeighboorList(float4 *dPos, float4 *dVel){}
 
 	// Colocar para receber ponteiro dFor
 	void calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor);
 
-	void setMinMax(float3 pMin, float3 pMax){}
+	inline void setParams(SysParams params){n_particles = params.n_particles;}
 
 	inline std::string getName(){return std::string("Direct Checking");}
 protected:

@@ -13,14 +13,14 @@
 
 class DirectMapping : public ContactDetection {
 public:
-	DirectMapping( unsigned int n_particle, SysParams params);
+	DirectMapping();
 	virtual ~DirectMapping();
 
 	void memInitialize();
 	void createNeighboorList(float4 *dPos);
 	void calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor);
 	std::string getName();
-	void setMinMax(float3 pMin, float3 pMax);
+	void setParams(SysParams params);
 
 protected:
 	int3 gridDim;
