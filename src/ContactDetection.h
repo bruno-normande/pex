@@ -13,7 +13,7 @@
 #include <string>
 
 #include "helper_math.h"
-#include "ParticleSystem.h"
+#include "aux.h"
 
 class ContactDetection {
 public:

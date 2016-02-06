@@ -11,28 +11,8 @@
 #include <algorithm>
 #include <string>
 #include <fstream>
-
+#include "aux.h"
 #include "ContactDetection.h"
-
-enum SystemType { DENSE, SPARSE, FLUID };
-enum NeighboorAlg { DM, DC };
-
-struct SysParams{
-	float3 gravity;
-	float dt;
-
-	int n_particles;
-	float particle_radius;
-	float3 p_max; // Max x, y, z
-	float3 p_min; // Min x, y, z
-
-	float boundary_damping;
-	float global_damping;
-	float damping;
-	float shear;
-	float spring;
-
-};
 
 class ParticleSystem {
 public:

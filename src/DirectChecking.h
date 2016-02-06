@@ -9,7 +9,7 @@
 #define DIRECTCHECKING_H_
 
 #include "ContactDetection.h"
-#include "ParticleSystem.h"
+#include "aux.h"
 
 class DirectChecking : public ContactDetection {
 public:
