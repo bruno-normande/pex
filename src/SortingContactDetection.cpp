@@ -11,7 +11,7 @@ SortingContactDetection::SortingContactDetection() :
 	dSortedPos(NULL), dSortedVel(NULL),
 	dGridParticleHash(NULL), dGridParticleIndex(NULL),
 	dCellStart(NULL), dCellEnd(NULL),
-	n_particles(0)
+	n_particles(0), d(0)
 {
 	gridSortBits = 18;    // increase this for larger grids ??
 	p_max = make_float3(0);
