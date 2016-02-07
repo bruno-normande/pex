@@ -157,7 +157,7 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 		}
 	}
 
-	force[idx] = resulting_force;
+	force[gridParticleIndex[idx]] = resulting_force;
 }
 
 void SortingContactDetection::calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor){
