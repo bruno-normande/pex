@@ -102,7 +102,7 @@ void reorder_and_find_cell_start(unsigned int *cellStart, unsigned int *cellEnd,
 }
 
 void SortingContactDetection::reorderAndSetStart(float4 *dPos, float4 *dVel){
-	unsigned int numThreads, numBlocks;
+	unsigned int numBlocks, numThreads;
 	computeGridSize(n_particles, 256, &numBlocks, &numThreads);
 
 	unsigned int numCells = gridSize.x*gridSize.y*gridSize.z;
@@ -110,7 +110,7 @@ void SortingContactDetection::reorderAndSetStart(float4 *dPos, float4 *dVel){
 	checkCudaErrors(cudaMemset(dCellEnd, EMPTY, numCells*sizeof(uint)));
 
 	unsigned int shared_mem = sizeof(unsigned int)*(numThreads+1);
-	reorder_and_find_cell_start<<<numThreads, numBlocks, shared_mem>>>(dCellStart, dCellEnd,
+	reorder_and_find_cell_start<<<numBlocks, numThreads, shared_mem>>>(dCellStart, dCellEnd,
 			dSortedPos, dSortedVel, dGridParticleHash, dGridParticleIndex, dPos,
 			dVel, n_particles);
 
@@ -162,10 +162,10 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 
 void SortingContactDetection::calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor){
 	// will not use dPos and dVel since i have my own version stored
-	unsigned int numThreads, numBlocks;
+	unsigned int numBlocks, numThreads;
 	computeGridSize(n_particles, 256, &numBlocks, &numThreads);
 
-	calculate_contact_force<<<numThreads, numBlocks>>>(dSortedPos, dSortedVel,
+	calculate_contact_force<<<numBlocks, numThreads>>>(dSortedPos, dSortedVel,
 			dGridParticleIndex, dCellStart, dCellEnd, dFor, n_particles, p_min, d);
 	getLastCudaError("Kernel execution failed: calculate_contact_force");
 }
