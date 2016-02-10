@@ -27,12 +27,13 @@ public:
 	void setParams(SysParams params);
 
 protected:
-	int3 gridDim;
-	unsigned int n_particles;
 	float d;
+	unsigned int n_particles;
+	int3 gridDim;
 	float3 p_min;
 
 	int *dGrid; // grid of lists
+	int *dGridCounter; // grid of lists
 };
 
 #endif /* DIRECTMAPPING_H_ */

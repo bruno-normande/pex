@@ -13,7 +13,7 @@
 #include "ParticleSystem.h"
 
 DirectMapping::DirectMapping() :
-	dGrid(NULL), dList(NULL), d(0), n_particles(0)
+	dGrid(NULL), dList(NULL), dGridCounter(NULL), d(0), n_particles(0)
 {
 	p_min = make_float3(0);
 }
@@ -21,14 +21,13 @@ DirectMapping::DirectMapping() :
 DirectMapping::~DirectMapping() {
 	if(dGrid)
 		cudaFree(dGrid);
+	if(dGridCounter)
+			cudaFree(dGridCounter);
 }
 
 void DirectMapping::memInitialize(){
 	checkCudaErrors(cudaMalloc((void**) &dGrid, sizeof(int) * gridDim.x * gridDim.y * gridDim.z * CELL_MAX_P));
-}
-
-void DirectMapping::calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor){
-
+	checkCudaErrors(cudaMalloc((void**) &dGrid, sizeof(int) * gridDim.x * gridDim.y * gridDim.z));
 }
 
 void DirectMapping::setParams(SysParams params){
