@@ -35,7 +35,7 @@ void create_neighboor_grid(float4 *pos, int *grid_list, int *grid_count,
 
 void DirectMapping::createNeighboorList(float4 *dPos, float4 *dVel){
         unsigned int numCells = gridDim.x * gridDim.y * gridDim.z;
-	checkCudaErrors(cudaMemset(dGrid, EMPTY, sizeof(int)*numCells));
+	//checkCudaErrors(cudaMemset(dGrid, EMPTY, sizeof(int)*numCells*CELL_MAX_P));
 	checkCudaErrors(cudaMemset(dGridCounter, 0, sizeof(int) * numCells));
 
 	unsigned int numBlocks, numThreads;

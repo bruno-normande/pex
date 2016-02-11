@@ -22,12 +22,12 @@ DirectMapping::~DirectMapping() {
 	if(dGrid)
 		cudaFree(dGrid);
 	if(dGridCounter)
-			cudaFree(dGridCounter);
+		cudaFree(dGridCounter);
 }
 
 void DirectMapping::memInitialize(){
 	checkCudaErrors(cudaMalloc((void**) &dGrid, sizeof(int) * gridDim.x * gridDim.y * gridDim.z * CELL_MAX_P));
-	checkCudaErrors(cudaMalloc((void**) &dGrid, sizeof(int) * gridDim.x * gridDim.y * gridDim.z));
+	checkCudaErrors(cudaMalloc((void**) &dGridCounter, sizeof(int) * gridDim.x * gridDim.y * gridDim.z));
 }
 
 void DirectMapping::setParams(SysParams params){
