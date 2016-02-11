@@ -42,7 +42,8 @@ int main(int argc, char **argv) {
         if(vm.count("algorithm")){
                 std::string alg = vm["algorithm"].as<std::string>();
                 if(alg=="DC") neighAlg = DC;
-                if(alg=="SCD") neighAlg = SCD;
+                else if(alg=="SCD") neighAlg = SCD;
+                else if(alg=="DM") neighAlg = DM;
         }
 
 

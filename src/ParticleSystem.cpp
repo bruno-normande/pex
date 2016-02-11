@@ -14,7 +14,7 @@
 #include "helper_cuda.h"
 #include "ParticleSystem.h"
 #include "ParticleSystem.cuh"
-//#include "DirectMapping.h"
+#include "DirectMapping.h"
 #include "DirectChecking.h"
 #include "SortingContactDetection.h"
 
@@ -44,9 +44,9 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 	params.p_min = make_float3(99.0,99.0,99.0);
 
 	switch (neigh_alg) {
-		//case DM:
-		//	contact = new DirectMapping();
-		//	break;
+		case DM:
+			contact = new DirectMapping();
+			break;
 		case SCD:
                         contact = new SortingContactDetection();
                         break;

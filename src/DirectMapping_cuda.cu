@@ -6,7 +6,11 @@
  */
 
 #include "DirectMapping.h"
+#include "helper_cuda.h"
+#include "helper_math.h"
 #include "aux.h"
+#include "World.cuh"
+#include <cuda.h>
 
 extern __constant__
 SysParams system_params;
@@ -30,8 +34,9 @@ void create_neighboor_grid(float4 *pos, int *grid_list, int *grid_count,
 }
 
 void DirectMapping::createNeighboorList(float4 *dPos, float4 *dVel){
-	checkCudaErrors(cudaMemset(dGrid, EMPTY, sizeof(int) * gridDim.x * gridDim.y * gridDim.z * CELL_MAX_P));
-	checkCudaErrors(cudaMemset(dGridCounter, 0, sizeof(int) * gridDim.x * gridDim.y * gridDim.z));
+        unsigned int numCells = gridDim.x * gridDim.y * gridDim.z;
+	checkCudaErrors(cudaMemset(dGrid, EMPTY, sizeof(int)*numCells));
+	checkCudaErrors(cudaMemset(dGridCounter, 0, sizeof(int) * numCells));
 
 	unsigned int numBlocks, numThreads;
 	computeGridSize(n_particles, 256, &numBlocks, &numThreads);
@@ -54,18 +59,20 @@ void dm_calculate_contact_force(int *grid_list, int *grid_count, float4 *pos,
 
 	int3 gridPos = get_grid_pos(make_float3(pos[idx]), pMin, d);
 	int grid_idx = pos_to_index(gridPos, gridDim);
-	r = system_params.particle_radius;
+	int r = system_params.particle_radius;
 
 	float3 resulting_force = make_float3(0);
+        float3 my_pos = make_float3(pos[idx]);
+        float3 my_vel = make_float3(vel[idx]);
 
 	for(int z = -1; z <= 1; z++){
 		for(int y = -1; y <= 1; y++){
 			for(int x = -1; x <= 1; x++){
-				int other_cell = pos_to_index(gridPos + make_float3(x,y,z), gridDim);
-				for(int i = 0; i < grid_count; i++){
-					int p_index = grid_list[grid_idx*CELL_MAX_P + i - 1];
-					resulting_force += World::contactForce(pos[idx], pos[p_index],
-							vel[idx], vel[p_index],r, r);
+				int other_cell = pos_to_index(gridPos + make_int3(x,y,z), gridDim);
+				for(int i = 0; i < grid_count[other_cell]; i++){
+					int p_index = grid_list[other_cell*CELL_MAX_P + i - 1];
+					resulting_force += World::contactForce(my_pos, make_float3(pos[p_index]),
+							my_vel, make_float3(vel[p_index]),r, r);
 				}
 			}
 		}

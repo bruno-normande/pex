@@ -46,6 +46,7 @@ inline int3 get_grid_pos(float3 pos, float3 p_min, float d){
 	return gridPos;
 }
 
+__device__
 inline int pos_to_index(int3 pos, int3 grid_dim){
 	return pos.z*grid_dim.x*grid_dim.y + pos.y*grid_dim.x + pos.x;
 }

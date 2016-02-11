@@ -13,7 +13,7 @@
 #include "ParticleSystem.h"
 
 DirectMapping::DirectMapping() :
-	dGrid(NULL), dList(NULL), dGridCounter(NULL), d(0), n_particles(0)
+	dGrid(NULL), dGridCounter(NULL), d(0), n_particles(0)
 {
 	p_min = make_float3(0);
 }
