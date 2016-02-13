@@ -67,11 +67,25 @@ void dm_calculate_contact_force(int *grid_list, int *grid_count, float4 *pos,
 	for(int z = -1; z <= 1; z++){
 		for(int y = -1; y <= 1; y++){
 			for(int x = -1; x <= 1; x++){
-				int other_cell = pos_to_index(gridPos + make_int3(x,y,z), gridDim);
+				// check boundaries
+				int3 other_cell_pos = gridPos + make_int3(x,y,z);
+				if(other_cell_pos.x < 0 || other_cell_pos.y < 0 ||
+						other_cell_pos.z < 0 ||other_cell_pos.x >= gridDim.x ||
+						other_cell_pos.y >= gridDim.y ||
+						other_cell_pos.x >= gridDim.z)
+				{
+					continue;
+				}
+
+				int other_cell = pos_to_index(other_cell_pos, gridDim);
 				for(int i = 0; i < grid_count[other_cell]; i++){
 					int p_index = grid_list[other_cell*CELL_MAX_P + i - 1];
-					resulting_force += World::contactForce(my_pos, make_float3(pos[p_index]),
-							my_vel, make_float3(vel[p_index]),r, r);
+					if(p_index != idx)
+						resulting_force += World::contactForce(my_pos,
+													make_float3(pos[p_index]),
+													my_vel,
+													make_float3(vel[p_index]),
+													r, r);
 				}
 			}
 		}
