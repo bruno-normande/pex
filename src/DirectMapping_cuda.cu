@@ -28,15 +28,13 @@ void create_neighboor_grid(float4 *pos, int *grid_list, int *grid_count,
 
 	int grid_idx = pos_to_index(gridPos, gridDim);
 
-	atomicAdd(&grid_count[grid_idx], 1);
-	grid_list[grid_idx*CELL_MAX_P + grid_count[grid_idx] - 1] = idx;
+	int list_idx = atomicAdd(&grid_count[grid_idx], 1);
+	grid_list[grid_idx*CELL_MAX_P + list_idx] = idx;
 
 }
 
 void DirectMapping::createNeighboorList(float4 *dPos, float4 *dVel){
-        unsigned int numCells = gridDim.x * gridDim.y * gridDim.z;
-	//checkCudaErrors(cudaMemset(dGrid, EMPTY, sizeof(int)*numCells*CELL_MAX_P));
-	checkCudaErrors(cudaMemset(dGridCounter, 0, sizeof(int) * numCells));
+	checkCudaErrors(cudaMemset(dGridCounter, 0, sizeof(int) * gridDim.x * gridDim.y * gridDim.z));
 
 	unsigned int numBlocks, numThreads;
 	computeGridSize(n_particles, 256, &numBlocks, &numThreads);
@@ -57,13 +55,14 @@ void dm_calculate_contact_force(int *grid_list, int *grid_count, float4 *pos,
 	if(idx >= n_particles)
 		return;
 
-	int3 gridPos = get_grid_pos(make_float3(pos[idx]), pMin, d);
-	int grid_idx = pos_to_index(gridPos, gridDim);
-	int r = system_params.particle_radius;
 
 	float3 resulting_force = make_float3(0);
-        float3 my_pos = make_float3(pos[idx]);
-        float3 my_vel = make_float3(vel[idx]);
+    float3 my_pos = make_float3(pos[idx]);
+    float3 my_vel = make_float3(vel[idx]);
+
+    int3 gridPos = get_grid_pos(my_pos, pMin, d);
+	int grid_idx = pos_to_index(gridPos, gridDim);
+	int r = system_params.particle_radius;
 
 	for(int z = -1; z <= 1; z++){
 		for(int y = -1; y <= 1; y++){
