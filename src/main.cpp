@@ -44,6 +44,7 @@ int main(int argc, char **argv) {
                 if(alg=="DC") neighAlg = DC;
                 else if(alg=="SCD") neighAlg = SCD;
                 else if(alg=="DM") neighAlg = DM;
+                else if(alg=="CM") neighAlg = CM;
         }
 
 

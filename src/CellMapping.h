@@ -5,8 +5,8 @@
  *      Author: bruno
  */
 
-#ifndef DIRECTMAPPING_H_
-#define DIRECTMAPPING_H_
+#ifndef CELLMAPPING_H_
+#define CELLMAPPING_H_
 
 #include "ContactDetection.h"
 #include "ParticleSystem.h"

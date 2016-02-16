@@ -17,6 +17,7 @@
 #include "DirectMapping.h"
 #include "DirectChecking.h"
 #include "SortingContactDetection.h"
+#include "CellMapping.h"
 
 inline float frand()
 {
@@ -49,6 +50,9 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 			break;
 		case SCD:
                         contact = new SortingContactDetection();
+                        break;
+		case CM:
+                        contact = new CellMapping();
                         break;
 		default:
 			contact = new DirectChecking();
