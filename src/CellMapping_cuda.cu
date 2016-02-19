@@ -101,13 +101,14 @@ void cm_calculate_contact_force(int *grid_list, int *grid_count, float4 *pos,
 				for(int i = 0; i < grid_count[cell_idx]; i++){
 					int p_index = grid_list[cell_idx*CELL_MAX_P + i];
 					float3 p_pos = make_float3(pos[p_index]);
-					int3 p_DLF = get_grid_pos(p_pos + make_float3(-r), pMin, d);
+					int3 p_DLF = get_grid_pos(p_pos + make_float3(r), pMin, d);
 
-					int3 judge = make_float3(get_min(gridPosDLF.x, p_DLF.x),
-							gridPosDLF.y, p_DLF.y, gridPosDLF.z, p_DLF.z);
+					int3 judge = make_int3(get_min(gridPosURB.x, p_DLF.x),
+							get_min(gridPosURB.y, p_DLF.y), 
+ 							get_min(gridPosURB.z, p_DLF.z));
 
 
-					if(p_index != idx && cell == judge)
+					if(p_index != idx && cell.x == judge.x && cell.y == judge.y && cell.z == judge.z)
 						resulting_force += World::contactForce(my_pos,
 													p_pos,
 													my_vel,
