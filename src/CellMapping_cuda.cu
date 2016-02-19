@@ -26,9 +26,9 @@ void cm_create_neighboor_grid(float4 *pos, int *grid_list, int *grid_count,
 
 	float r = system_params.particle_radius;
 	//Upper Righe Back
-	int3 gridPosURB = get_grid_pos(make_float3(pos[idx]) + make_float3(r), p_min, d);
+	int3 gridPosURB = get_grid_pos(make_float3(pos[idx]) + make_float3(r), p_min, d); // tentar multiplicar r por 2
 	// Down Left Front
-	int3 gridPosDLF = get_grid_pos(make_float3(pos[idx]) + make_float3(-r), p_min, d);
+	int3 gridPosDLF = get_grid_pos(make_float3(pos[idx]) + make_float3(-r), p_min, d);  // tentar multiplicar r por 2
 
 	for(int i = gridPosDLF.x; i <= gridPosURB.x; i++){
 		for(int j = gridPosDLF.y; j <= gridPosURB.y; j++){
@@ -100,9 +100,16 @@ void cm_calculate_contact_force(int *grid_list, int *grid_count, float4 *pos,
 				int cell_idx = pos_to_index(cell, gridDim);
 				for(int i = 0; i < grid_count[cell_idx]; i++){
 					int p_index = grid_list[cell_idx*CELL_MAX_P + i];
-					if(p_index != idx)
+					float3 p_pos = make_float3(pos[p_index]);
+					int3 p_DLF = get_grid_pos(p_pos + make_float3(-r), pMin, d);
+
+					int3 judge = make_float3(get_min(gridPosDLF.x, p_DLF.x),
+							gridPosDLF.y, p_DLF.y, gridPosDLF.z, p_DLF.z);
+
+
+					if(p_index != idx && cell == judge)
 						resulting_force += World::contactForce(my_pos,
-													make_float3(pos[p_index]),
+													p_pos,
 													my_vel,
 													make_float3(vel[p_index]),
 													r, r);

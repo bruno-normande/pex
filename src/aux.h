@@ -51,4 +51,11 @@ inline int pos_to_index(int3 pos, int3 grid_dim){
 	return pos.z*grid_dim.x*grid_dim.y + pos.y*grid_dim.x + pos.x;
 }
 
+__device__
+inline int get_min(int a, int b){
+	if(a <= b)
+		return a;
+	return b;
+}
+
 #endif /* AUX_H_ */
