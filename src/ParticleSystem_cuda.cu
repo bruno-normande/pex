@@ -18,16 +18,17 @@ void integrate_system(float4 *pos, float4 *vel, float4 *force, float4 *obstacles
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	
 	if(idx>=n_particles) return; 
+	float3 my_pos = make_float3(pos[idx]);
+	float3 my_vel = make_float3(vel[idx]);
 
-	float3 obs_force = make_float3(0);
+	float3 my_force = make_float3(force[idx]);
 	for(int i = 0; i < n_obstacles; i++){
-		obs_force += World::contactForce(make_float3(pos[idx]), make_float3(obstacles[i]),
-				make_float3(vel[idx]), make_float3(0), system_params.particle_radius,
+		my_force += World::contactForce(my_pos, make_float3(obstacles[i]),
+				my_vel, make_float3(0), system_params.particle_radius,
 				obstacles[i].z);
 	}
-	force[idx] += make_float4(obs_force);
 
-	float3 vel_f = make_float3(vel[idx] + force[idx]);
+	float3 vel_f = my_vel + my_force;
 	vel_f += system_params.gravity*system_params.dt;
 	vel_f *= system_params.global_damping;
 
