@@ -167,8 +167,8 @@ void ParticleSystem::createParticles(){
 
 		case FLUID:
 		{
-			grid_size[0] = side/2;
-			grid_size[1] = side/2;
+			grid_size[0] = ceil(side/2.0);
+			grid_size[1] = ceil(side/2.0);
 			grid_size[2] = side*4;
 
 			float obstacle_radius = side*params.particle_radius;
