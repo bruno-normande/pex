@@ -12,11 +12,18 @@ __constant__
 SysParams system_params;
 
 __global__
-void integrate_system(float4 *pos, float4 *vel, float4 *force, unsigned int n_particles)
+void integrate_system(float4 *pos, float4 *vel, float4 *force, float4 *obstacles,
+		unsigned int n_particles, unsigned int n_obstacles)
 {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	
 	if(idx>=n_particles) return; 
+
+	for(int i = 0; i < n_obstacles; i++){
+		force[idx] += World::contactForce(make_float3(pos[idx]), make_float3(obstacles[i]),
+				make_float3(vel[idx]), make_float3(0), system_params.particle_radius,
+				obstacles[i].z);
+	}
 
 	float3 vel_f = make_float3(vel[idx] + force[idx]);
 	vel_f += system_params.gravity*system_params.dt;
@@ -40,6 +47,8 @@ void ParticleSystem::copyParticlesToDevice(){
         							cudaMemcpyHostToDevice));
         checkCudaErrors(cudaMemcpy(dVel, hVel, sizeof(float4)*params.n_particles,
         							cudaMemcpyHostToDevice));
+        checkCudaErrors(cudaMemcpy(dObs, hObs, sizeof(float4)*params.n_obstacles,
+                							cudaMemcpyHostToDevice));
 
 }
 

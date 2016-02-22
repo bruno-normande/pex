@@ -9,9 +9,11 @@
 #define WORLD_H_
 
 #include "helper_math.h"
+#include <vector>
 
 class World {
-public:
+
+public: // GPU ================================
 
 	/** Atualiza posição da partícula para que ela não
 	 * atravesse nenhum objeto ou parede */
@@ -26,6 +28,8 @@ public:
 			float3 velA, float3 velB,
 	        float radiusA, float radiusB);
 
+private:
+	static std::vector<float4> obstacles;
 };
 
 #endif /* WORLD_H_ */

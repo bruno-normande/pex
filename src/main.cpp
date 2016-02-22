@@ -23,7 +23,8 @@ int main(int argc, char **argv) {
 			("help,h", "Produces help message")
 			("file,f", po::value<std::string>(), "Output file")
 			(",n", po::value<unsigned int>(), "Particle number")
-			("algorithm,a", po::value<std::string>(), "Contact Detection algorithm");
+			("algorithm,a", po::value<std::string>(), "Contact Detection algorithm")
+			("distribution,d", po::value<std::string>(), "Type of distribution (fluid, sparse or dense)");
 
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc,argv,desc), vm);
@@ -39,16 +40,23 @@ int main(int argc, char **argv) {
 		n_particles = vm["-n"].as<unsigned int>();
 	}
 	NeighboorAlg neighAlg = DM;
-        if(vm.count("algorithm")){
-                std::string alg = vm["algorithm"].as<std::string>();
-                if(alg=="DC") neighAlg = DC;
-                else if(alg=="SCD") neighAlg = SCD;
-                else if(alg=="DM") neighAlg = DM;
-                else if(alg=="CM") neighAlg = CM;
-        }
+	if(vm.count("algorithm")){
+		std::string alg = vm["algorithm"].as<std::string>();
+		if(alg=="DC") neighAlg = DC;
+		else if(alg=="SCD") neighAlg = SCD;
+		else if(alg=="DM") neighAlg = DM;
+		else if(alg=="CM") neighAlg = CM;
+	}
 
+	SystemType distr = DENSE;
+	if(vm.count("distribution")){
+		std::string d = vm["distribution"].as<std::string>();
+		if(d=="dense") distr = DENSE;
+		else if(d) distr = FLUID;
+		else if(d=="sparse") distr = SPARSE;
+	}
 
-	ParticleSystem *system = new ParticleSystem(n_particles, neighAlg);
+	ParticleSystem *system = new ParticleSystem(n_particles, neighAlg, distr);
 
 	std::cout << "Starting simulation..." << std::endl << "N = " << n_particles << std::endl;
 	std::string out_file;

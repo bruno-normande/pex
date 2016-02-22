@@ -16,7 +16,7 @@
 
 class ParticleSystem {
 public:
-	ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg = DM);
+	ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg = DM, SystemType distr = DENSE);
 	virtual ~ParticleSystem();
 
 	/** Run simulation */
@@ -58,6 +58,8 @@ protected:
 	float4 *hVel;
 	float4 *dVel;
 	float4 *dFor;
+	float4 *hObs;
+	float4 *dObs;
 
 	SysParams params;
 

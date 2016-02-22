@@ -28,6 +28,8 @@ struct SysParams{
         float shear;
         float spring;
 
+        int n_obstacles;
+
 };
 
 inline void computeGridSize(unsigned int n, unsigned int block_size,

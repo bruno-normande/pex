@@ -87,3 +87,7 @@ float3 World::contactForce(float3 posA, float3 posB,
 	return force;
 }
 
+
+
+
+

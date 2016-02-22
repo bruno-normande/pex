@@ -18,19 +18,20 @@
 #include "DirectChecking.h"
 #include "SortingContactDetection.h"
 #include "CellMapping.h"
+#include "World.cuh"
 
 inline float frand()
 {
     return rand() / (float) RAND_MAX;
 }
 
-ParticleSystem::ParticleSystem(unsigned int n_particles,
-								NeighboorAlg neigh_alg) :
+ParticleSystem::ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg,
+								SystemType distr) :
 	hPos(NULL), dPos(NULL),
 	hVel(NULL), dVel(NULL),
 	dFor(NULL)
 {
-	type = DENSE; // default
+	type = distr; // default
 
 	params.n_particles = n_particles;
 	params.particle_radius = 1.0/64.0;
@@ -44,16 +45,22 @@ ParticleSystem::ParticleSystem(unsigned int n_particles,
 	params.p_max = make_float3(-99.-99,-99.0,0.0);
 	params.p_min = make_float3(99.0,99.0,99.0);
 
+	if(type == FLUID){
+		params.n_obstacles = 1;
+	}else{
+		params.n_obstacles = 0;
+	}
+
 	switch (neigh_alg) {
 		case DM:
 			contact = new DirectMapping();
 			break;
 		case SCD:
-                        contact = new SortingContactDetection();
-                        break;
+			contact = new SortingContactDetection();
+			break;
 		case CM:
-                        contact = new CellMapping();
-                        break;
+			contact = new CellMapping();
+			break;
 		default:
 			contact = new DirectChecking();
 			break;
@@ -71,12 +78,16 @@ ParticleSystem::~ParticleSystem() {
 		cudaFree(dVel);
 	if(dFor)
 		cudaFree(dFor);
+	if(hObs)
+		delete hObs;
+	if(dObs)
+		cudaFree(dObs);
 }
 
 float ParticleSystem::run(){
 	int t_steps = 2500;
 
-        memInitialize();
+	memInitialize();
 	createParticles(); //has to come before anny device mem copy
 	checkCudaErrors(cudaMemcpyToSymbol(&system_params, &params, sizeof(SysParams)));
 	contact->setParams(params);
@@ -124,11 +135,15 @@ void ParticleSystem::memInitialize(){
 	// position
 	hPos = new float4[params.n_particles];
 	hVel = new float4[params.n_particles];
+	if(params.n_obstacles)
+		hObs = new float4[params.n_obstacles];
 
 	// alocate device memory
 	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float4) * params.n_particles));
 	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float4) * params.n_particles));
 	checkCudaErrors(cudaMalloc((void**) &dFor, sizeof(float4) * params.n_particles));
+	if(params.n_obstacles)
+		checkCudaErrors(cudaMalloc((void**) &dObs, sizeof(float4) * params.n_obstacles));
 
 }
 
@@ -137,6 +152,7 @@ void ParticleSystem::createParticles(){
 	unsigned int side = ceilf(powf(params.n_particles, 1.0/3.0));
 	unsigned int grid_size[3]; // quantidade de partículas por lado
 	float distance = params.particle_radius*2; // distância entre partículas
+	float y0 = 0;
 
 	switch(type){
 
@@ -151,6 +167,11 @@ void ParticleSystem::createParticles(){
 		grid_size[0] = side/2;
 		grid_size[1] = side/2;
 		grid_size[2] = side*4;
+
+		float obstacle_radius = side*params.particle_radius;
+		y0 = side*params.particle_radius*2 + params.particle_radius ;
+
+		hObs[0] = make_float4(obstacle_radius);
 		break;
 
 	default: // default == dense
@@ -158,10 +179,12 @@ void ParticleSystem::createParticles(){
 
 	}
 
-	distributeParticles(grid_size, distance, jitter);
+	distributeParticles(grid_size, distance, jitter, y0);
 }
 
-void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance, float jitter){
+void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance,
+		float jitter, float y0 = 0)
+{
 
 	srand(1);
 
@@ -177,7 +200,7 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 					if(hPos[i].x < params.p_min.x)
 						params.p_min.x = hPos[i].x;
 
-					hPos[i].y = (distance * y) + params.particle_radius + (frand()*2.0f-1.0f)*jitter;
+					hPos[i].y = (distance * y) + params.particle_radius + (frand()*2.0f-1.0f)*jitter + y0;
 					if(hPos[i].y > params.p_max.y)
 						params.p_max.y = hPos[i].y;
 					if(hPos[i].y < params.p_min.y)
