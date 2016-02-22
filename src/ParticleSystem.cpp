@@ -189,20 +189,23 @@ void ParticleSystem::createParticles(){
 
 	distributeParticles(grid_size, distance, jitter, y0);
 
-	//TODO: Create method to define system boundaries
-	if(params.p_max.x < hObs[0].x + hObs[0].w)
-		params.p_max.x = hObs[0].x + hObs[0].w;
-	if(params.p_max.y < hObs[0].y + hObs[0].w)
-			params.p_max.y = hObs[0].y + hObs[0].w;
-	if(params.p_max.z < hObs[0].z + hObs[0].w)
-			params.p_max.z = hObs[0].z + hObs[0].w;
+	if(params.n_obstacles)
+	{
+		//TODO: Create method to define system boundaries
+		if(params.p_max.x < hObs[0].x + hObs[0].w)
+			params.p_max.x = hObs[0].x + hObs[0].w;
+		if(params.p_max.y < hObs[0].y + hObs[0].w)
+				params.p_max.y = hObs[0].y + hObs[0].w;
+		if(params.p_max.z < hObs[0].z + hObs[0].w)
+				params.p_max.z = hObs[0].z + hObs[0].w;
 
-	if(params.p_min.x > hObs[0].x - hObs[0].w)
-		params.p_min.x = hObs[0].x - hObs[0].w;
-	if(params.p_min.y > hObs[0].y - hObs[0].w)
-			params.p_min.y = hObs[0].y - hObs[0].w;
-	if(params.p_min.z > hObs[0].z - hObs[0].w)
-			params.p_min.z = hObs[0].z - hObs[0].w;
+		if(params.p_min.x > hObs[0].x - hObs[0].w)
+			params.p_min.x = hObs[0].x - hObs[0].w;
+		if(params.p_min.y > hObs[0].y - hObs[0].w)
+				params.p_min.y = hObs[0].y - hObs[0].w;
+		if(params.p_min.z > hObs[0].z - hObs[0].w)
+				params.p_min.z = hObs[0].z - hObs[0].w;
+	}
 
 	params.p_max += add_to_max_border;
 	params.p_min -= add_to_max_border;

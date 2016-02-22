@@ -50,7 +50,8 @@ void ParticleSystem::copyParticlesToDevice(){
         							cudaMemcpyHostToDevice));
         checkCudaErrors(cudaMemcpy(dVel, hVel, sizeof(float4)*params.n_particles,
         							cudaMemcpyHostToDevice));
-        checkCudaErrors(cudaMemcpy(dObs, hObs, sizeof(float4)*params.n_obstacles,
+	if(params.n_obstacles)
+        	checkCudaErrors(cudaMemcpy(dObs, hObs, sizeof(float4)*params.n_obstacles,
                 							cudaMemcpyHostToDevice));
 
 }
