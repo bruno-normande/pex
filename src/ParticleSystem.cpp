@@ -27,9 +27,8 @@ inline float frand()
 
 ParticleSystem::ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg,
 								SystemType distr) :
-	hPos(NULL), dPos(NULL),
-	hVel(NULL), dVel(NULL),
-	dFor(NULL)
+	hPos(NULL), dPos(NULL), hVel(NULL), dVel(NULL),
+	hObs(NULL), dObs(NULL), dFor(NULL)
 {
 	type = distr; // default
 
@@ -153,6 +152,7 @@ void ParticleSystem::createParticles(){
 	unsigned int grid_size[3]; // quantidade de partículas por lado
 	float distance = params.particle_radius*2; // distância entre partículas
 	float y0 = 0;
+	float3 add_to_max_border = make_float3(0);
 
 	switch(type){
 
@@ -175,6 +175,8 @@ void ParticleSystem::createParticles(){
 			y0 = side*params.particle_radius*2 + params.particle_radius ;
 
 			hObs[0] = make_float4(obstacle_radius);
+			add_to_max_border.x = side*params.particle_radius*10;
+			add_to_max_border.y = side*params.particle_radius*10;
 			break;
 		}
 		default: // default == dense
@@ -185,6 +187,12 @@ void ParticleSystem::createParticles(){
 	}
 
 	distributeParticles(grid_size, distance, jitter, y0);
+
+	params.p_max += add_to_max_border;
+	params.p_min -= add_to_max_border;
+
+	std::cout << "PMAX= (" << params.p_max.x <<", " << params.p_max.y << ", " << params.p_max.z << ")" << std::endl;
+	std::cout << "PMAX= (" << params.p_min.x <<", " << params.p_min.y << ", " << params.p_min.z << ")" << std::endl;
 }
 
 void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance,
@@ -233,8 +241,6 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 	params.p_min.x -= distance;
 	params.p_min.y -= distance;
 	params.p_min.z -= distance;
-	std::cout << "PMAX= (" << params.p_max.x <<", " << params.p_max.y << ", " << params.p_max.z << ")" << std::endl;
-	std::cout << "PMAX= (" << params.p_min.x <<", " << params.p_min.y << ", " << params.p_min.z << ")" << std::endl;
 }
 
 void ParticleSystem::randomizeVelocity(){
