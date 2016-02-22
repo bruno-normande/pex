@@ -151,7 +151,7 @@ void ParticleSystem::createParticles(){
 	unsigned int side = ceilf(powf(params.n_particles, 1.0/3.0));
 	unsigned int grid_size[3]; // quantidade de partículas por lado
 	float distance = params.particle_radius*2; // distância entre partículas
-	float y0 = 0;
+	float z0 = 0;
 	float3 add_to_max_border = make_float3(0);
 
 	switch(type){
@@ -172,7 +172,7 @@ void ParticleSystem::createParticles(){
 			grid_size[2] = side*4;
 
 			float obstacle_radius = side*params.particle_radius;
-			y0 = side*params.particle_radius*2 + params.particle_radius ;
+			z0 = side*params.particle_radius*2 + params.particle_radius ;
 
 			// todo: create addObstacle method
 			hObs[0] = make_float4(obstacle_radius);
@@ -187,7 +187,7 @@ void ParticleSystem::createParticles(){
 
 	}
 
-	distributeParticles(grid_size, distance, jitter, y0);
+	distributeParticles(grid_size, distance, jitter, z0);
 
 	if(params.n_obstacles)
 	{
@@ -195,16 +195,16 @@ void ParticleSystem::createParticles(){
 		if(params.p_max.x < hObs[0].x + hObs[0].w)
 			params.p_max.x = hObs[0].x + hObs[0].w;
 		if(params.p_max.y < hObs[0].y + hObs[0].w)
-				params.p_max.y = hObs[0].y + hObs[0].w;
+			params.p_max.y = hObs[0].y + hObs[0].w;
 		if(params.p_max.z < hObs[0].z + hObs[0].w)
-				params.p_max.z = hObs[0].z + hObs[0].w;
+			params.p_max.z = hObs[0].z + hObs[0].w;
 
 		if(params.p_min.x > hObs[0].x - hObs[0].w)
 			params.p_min.x = hObs[0].x - hObs[0].w;
 		if(params.p_min.y > hObs[0].y - hObs[0].w)
-				params.p_min.y = hObs[0].y - hObs[0].w;
+			params.p_min.y = hObs[0].y - hObs[0].w;
 		if(params.p_min.z > hObs[0].z - hObs[0].w)
-				params.p_min.z = hObs[0].z - hObs[0].w;
+			params.p_min.z = hObs[0].z - hObs[0].w;
 	}
 
 	params.p_max += add_to_max_border;
@@ -215,7 +215,7 @@ void ParticleSystem::createParticles(){
 }
 
 void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance,
-		float jitter, float y0 = 0)
+		float jitter, float z0 = 0)
 {
 
 	srand(1);
@@ -232,13 +232,13 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 					if(hPos[i].x < params.p_min.x)
 						params.p_min.x = hPos[i].x;
 
-					hPos[i].y = (distance * y) + params.particle_radius + (frand()*2.0f-1.0f)*jitter + y0;
+					hPos[i].y = (distance * y) + params.particle_radius + (frand()*2.0f-1.0f)*jitter;
 					if(hPos[i].y > params.p_max.y)
 						params.p_max.y = hPos[i].y;
 					if(hPos[i].y < params.p_min.y)
 						params.p_min.y = hPos[i].y;
 
-					hPos[i].z = (distance * z) + params.particle_radius + (frand()*2.0f-1.0f)*jitter;
+					hPos[i].z = (distance * z) + params.particle_radius + (frand()*2.0f-1.0f)*jitter + z0;
 					if(hPos[i].z > params.p_max.z)
 						params.p_max.z = hPos[i].z;
 					if(hPos[i].z < params.p_min.z)
