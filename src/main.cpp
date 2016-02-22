@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
 	if(vm.count("distribution")){
 		std::string d = vm["distribution"].as<std::string>();
 		if(d=="dense") distr = DENSE;
-		else if(d) distr = FLUID;
+		else if(d=="fluid") distr = FLUID;
 		else if(d=="sparse") distr = SPARSE;
 	}
 

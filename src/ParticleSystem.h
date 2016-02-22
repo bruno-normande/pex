@@ -28,7 +28,7 @@ public:
 	void createParticles();
 
 	/** Distribute particles in cube */
-	void distributeParticles(unsigned int* grid_size, float distance, float jitter);
+	void distributeParticles(unsigned int* grid_size, float distance, float jitter, float y0);
 
 	/** Distribute random velocity to all particles */
 	void randomizeVelocity();

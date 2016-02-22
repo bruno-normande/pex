@@ -19,11 +19,13 @@ void integrate_system(float4 *pos, float4 *vel, float4 *force, float4 *obstacles
 	
 	if(idx>=n_particles) return; 
 
+	float3 obs_force = make_float3(0);
 	for(int i = 0; i < n_obstacles; i++){
-		force[idx] += World::contactForce(make_float3(pos[idx]), make_float3(obstacles[i]),
+		obs_force += World::contactForce(make_float3(pos[idx]), make_float3(obstacles[i]),
 				make_float3(vel[idx]), make_float3(0), system_params.particle_radius,
 				obstacles[i].z);
 	}
+	force[idx] += make_float4(obs_force);
 
 	float3 vel_f = make_float3(vel[idx] + force[idx]);
 	vel_f += system_params.gravity*system_params.dt;
@@ -39,7 +41,7 @@ void integrate_system(float4 *pos, float4 *vel, float4 *force, float4 *obstacles
 void ParticleSystem::integrate(){
 	unsigned int n_threads, n_blocks;
 	computeGridSize(params.n_particles,256, &n_blocks, &n_threads);
-	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dFor, params.n_particles);
+	integrate_system<<< n_blocks, n_threads >>>(dPos, dVel, dFor, dObs, params.n_particles, params.n_obstacles);
 }
 
 void ParticleSystem::copyParticlesToDevice(){
