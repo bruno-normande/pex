@@ -156,26 +156,31 @@ void ParticleSystem::createParticles(){
 
 	switch(type){
 
-	case SPARSE:
-		// igual ao dense mas com Distancia entre partículas maior
-		grid_size[0] = grid_size[1] = grid_size[2] = side;
-		distance = params.particle_radius*10.0; //TODO: Checar se essa distância está boa
-		randomizeVelocity();
-		break;
+		case SPARSE:
+		{
+			// igual ao dense mas com Distancia entre partículas maior
+			grid_size[0] = grid_size[1] = grid_size[2] = side;
+			distance = params.particle_radius*10.0; //TODO: Checar se essa distância está boa
+			randomizeVelocity();
+			break;
+		}
 
-	case FLUID:
-		grid_size[0] = side/2;
-		grid_size[1] = side/2;
-		grid_size[2] = side*4;
+		case FLUID:
+		{
+			grid_size[0] = side/2;
+			grid_size[1] = side/2;
+			grid_size[2] = side*4;
 
-		float obstacle_radius = side*params.particle_radius;
-		y0 = side*params.particle_radius*2 + params.particle_radius ;
+			float obstacle_radius = side*params.particle_radius;
+			y0 = side*params.particle_radius*2 + params.particle_radius ;
 
-		hObs[0] = make_float4(obstacle_radius);
-		break;
-
-	default: // default == dense
-		grid_size[0] = grid_size[1] = grid_size[2] = side;
+			hObs[0] = make_float4(obstacle_radius);
+			break;
+		}
+		default: // default == dense
+		{
+			grid_size[0] = grid_size[1] = grid_size[2] = side;
+		}
 
 	}
 
