@@ -36,7 +36,7 @@ ParticleSystem::ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg,
 	params.particle_radius = 1.0/64.0;
 	params.dt = 0.1;
 	params.boundary_damping = -0.5;
-	params.global_damping = 0.9; // 1.0 what's damping? 0,02
+	params.global_damping = 0.999; // 1.0 what's damping? 0,02
 	params.damping = 0.02;
 	params.spring = -0.5;
 	params.shear = 0.1;
@@ -171,13 +171,13 @@ void ParticleSystem::createParticles(){
 			grid_size[1] = ceil(side/2.0);
 			grid_size[2] = side*4;
 
-			float obstacle_radius = side*params.particle_radius;
-			z0 = side*params.particle_radius*2 + params.particle_radius ;
+			float obstacle_radius = side*params.particle_radius/2;
+			z0 = side*params.particle_radius + params.particle_radius ;
 
 			// todo: create addObstacle method
 			hObs[0] = make_float4(obstacle_radius);
-			add_to_max_border.x = side*params.particle_radius*10;
-			add_to_max_border.y = side*params.particle_radius*10;
+			add_to_max_border.x = side*params.particle_radius*2;
+			add_to_max_border.y = side*params.particle_radius*2;
 			break;
 		}
 		default: // default == dense
