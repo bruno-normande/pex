@@ -89,7 +89,7 @@ ParticleSystem::~ParticleSystem() {
 }
 
 float ParticleSystem::run(){
-	int t_steps = 2500;
+	int t_steps = 1500;
 
 	memInitialize();
 	createParticles(); //has to come before anny device mem copy
@@ -250,11 +250,12 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 						params.p_min.z = hPos[i].z;
 
 					hPos[i].w = 0;
-
-					hVel[i].x = 0.0;
-					hVel[i].y = 0.0;
-					hVel[i].z = 0.0;
-					hVel[i].w = 0.0;
+					if(type != SPARSE){
+						hVel[i].x = 0.0;
+						hVel[i].y = 0.0;
+						hVel[i].z = 0.0;
+						hVel[i].w = 0.0;
+					}
 				}
 			}
 		}
@@ -269,9 +270,9 @@ void ParticleSystem::distributeParticles(unsigned int* grid_size, float distance
 
 void ParticleSystem::randomizeVelocity(){
 	for(int i = 0; i < params.n_particles; i++){
-		hVel[i].x = frand()*2.0 - 1.0;
-		hVel[i].y = frand()*2.0 - 1.0;
-		hVel[i].z = frand()*2.0 - 1.0;
+		hVel[i].x = (frand()*2.0 - 1.0)/10.0;
+		hVel[i].y = (frand()*2.0 - 1.0)/10.0;
+		hVel[i].z = (frand()*2.0 - 1.0)/10.0;	
 	}
 }
 
