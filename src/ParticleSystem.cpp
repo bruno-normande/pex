@@ -40,9 +40,14 @@ ParticleSystem::ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg,
 	params.damping = 0.02;
 	params.spring = -0.5;
 	params.shear = 0.1;
-	params.gravity = make_float3(0.0, 0.0, -0.003);
 	params.p_max = make_float3(-99.-99,-99.0,0.0);
 	params.p_min = make_float3(99.0,99.0,99.0);
+
+	if(type == SPARSE){
+		params.gravity = make_float3(0.0, 0.0, -0.0001);
+	}else{
+		params.gravity = make_float3(0.0, 0.0, -0.003);
+	}
 
 	if(type == FLUID){
 		params.n_obstacles = 1;
@@ -160,7 +165,7 @@ void ParticleSystem::createParticles(){
 		{
 			// igual ao dense mas com Distancia entre partículas maior
 			grid_size[0] = grid_size[1] = grid_size[2] = side;
-			distance = params.particle_radius*10.0; //TODO: Checar se essa distância está boa
+			distance = params.particle_radius*10.0;
 			randomizeVelocity();
 			break;
 		}
