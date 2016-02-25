@@ -121,7 +121,7 @@ __global__
 void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 		unsigned int *gridParticleIndex, unsigned int *cellStart,
 		unsigned int *cellEnd, float4 *force, unsigned int n_particles,
-		float3 pMin, float d)
+		float3 pMin, float d, int3 gridDim)
 {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
 	if(idx >= n_particles) return;
@@ -138,7 +138,13 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 	for(int z = -1; z <= 1; z++){
 		for(int y = -1; y <= 1; y++){
 			for(int x = -1; x <= 1; x++){
-				unsigned int hash =  makeHash(gridPos + make_int3(x,y,z));
+                                int3 cell = gridPos + make_int3(x,y,z);
+                                if(cell.x < 0 || cell.y < 0 || cell.z < 0 ||
+                                   cell.x >= gridDim.x || cell.y >= gridDim.y ||
+                                   cell.z >= gridDim.z) 
+					continue;
+ 
+				unsigned int hash =  makeHash(cell);
 				unsigned int start_idx = cellStart[hash];
 
 				if(start_idx != EMPTY){
@@ -166,7 +172,7 @@ void SortingContactDetection::calculateContactForce(float4 *dPos, float4 *dVel, 
 	computeGridSize(n_particles, 256, &numBlocks, &numThreads);
 
 	calculate_contact_force<<<numBlocks, numThreads>>>(dSortedPos, dSortedVel,
-			dGridParticleIndex, dCellStart, dCellEnd, dFor, n_particles, p_min, d);
+			dGridParticleIndex, dCellStart, dCellEnd, dFor, n_particles, p_min, d, gridSize);
 	getLastCudaError("Kernel execution failed: calculate_contact_force");
 }
 
