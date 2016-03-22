@@ -24,6 +24,13 @@ for root, dirs, files in os.walk(args.dirname[0]):
 					N = int(line.split()[2])
 				if counter == 2:
 					alg = line.split(':')[1].strip()
+					if alg == "Sorting Contact Detection":
+						alg = "SCD"
+					elif alg == "Cell Mapping":
+						alg = "CM"
+					elif alg == "Direct Mapping":
+						alg = "DM"
+
 				if counter == 6:
 					time = float(line.split("=")[1].split()[0])
 				counter += 1
