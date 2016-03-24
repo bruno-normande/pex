@@ -11,7 +11,7 @@
 #include <math.h>
 
 enum SystemType { DENSE, SPARSE, FLUID };
-enum NeighboorAlg { DM, DC, SCD, CM };
+enum NeighboorAlg { DM, DC, SCD, CM, SAS };
 
 struct SysParams{
         float3 gravity;

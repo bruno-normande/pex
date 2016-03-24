@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
 		else if(alg=="SCD") neighAlg = SCD;
 		else if(alg=="DM") neighAlg = DM;
 		else if(alg=="CM") neighAlg = CM;
+		else if(alg=="SAS") neighAlg = SAS;
 	}
 
 	SystemType distr = DENSE;

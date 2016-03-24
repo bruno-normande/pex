@@ -18,6 +18,7 @@
 #include "DirectChecking.h"
 #include "SortingContactDetection.h"
 #include "CellMapping.h"
+#include "SortingAndSearch.h"
 #include "World.cuh"
 
 inline float frand()
@@ -64,6 +65,9 @@ ParticleSystem::ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg,
 			break;
 		case CM:
 			contact = new CellMapping();
+			break;
+		case SAS:
+			contact = new SortingAndSearch();
 			break;
 		default:
 			contact = new DirectChecking();
