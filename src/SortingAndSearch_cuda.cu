@@ -21,9 +21,11 @@
 extern __constant__
 SysParams system_params;
 
-struct particle_before : public thrust::binary_function<uint4, uint4, bool>{
+struct particle_before
+{
 	__host__ __device__
-	bool operator()(const uint4 &left, const uint4 &right) const{
+	bool operator()(const uint4 &left, const uint4 &right) const
+	{
 		return (left.z < right.z) || (left.z == right.z && left.y < right.y) ||
 				(left.z == right.z && left.y == right.y && left.x < right.x);
 	}
@@ -32,7 +34,7 @@ struct particle_before : public thrust::binary_function<uint4, uint4, bool>{
 
 
 __global__
-void prepare_grid(unsigned int *dSortedGrid, float4 *dPos,
+void prepare_grid(uint4 *dSortedGrid, float4 *dPos,
 		unsigned int n_particles, float3 p_min, float d)
 {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -62,7 +64,7 @@ void SortingAndSearch::prepareGrid(float4 *dPos){
 void SortingAndSearch::sortParticles(){
 	thrust::sort(thrust::device_ptr<uint4>(dSortedGrid),
 			thrust::device_ptr<uint4>(dSortedGrid + n_particles),
-			less());
+			particle_before());
 }
 
 __global__
@@ -111,16 +113,18 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 	for(int z = -1; z <= 1; z++){
 		for(int y = -1; y <= 1; y++){
 			// get index of first x-1 continue until x != x+1
-			if(cell.y < 0 || cell.z < 0 ||
-					cell.y >= gridDim.y || cell.z >= gridDim.z)
+			
+			int x = gridPos.x-1 >=0 ? gridPos.x-1: gridPos.x;
+                        uint4 cell = make_uint4(x, gridPos.y + y, gridPos.z + z,0);
+			
+			if(cell.y >= gridDim.y || cell.z >= gridDim.z)
 				continue;
 
-			int x = gridPos.x-1 >=0 ? gridPos.x-1: gridPos.x;
-
-			uint4 = make_uint4(x, gridPos.y + y, gridPos.z + z);
-			int start = thrust::lower_bound(thrust::device_ptr<uint4>(dSortedGrid),
-					thrust::device_ptr<uint4>(dSortedGrid + n_particles),
-					less());
+			//thrust::device_ptr<uint4> start = thrust::lower_bound(thrust::device_ptr<uint4>(dSortedGrid),
+			//		thrust::device_ptr<uint4>(dSortedGrid + n_particles),
+			//		particle_before());
+			//thrust::device_ptr<uint4> b = start;
+			//++b;
 //			for(int x = -1; x <= 1; x++)
 //			{
 //                                int3 cell = gridPos + make_int3(x,y,z);
@@ -145,7 +149,7 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 		}
 	}
 
-	force[gridParticleIndex[idx]] = make_float4(resulting_force);
+	force[dSortedGrid[idx].w] = make_float4(resulting_force);
 }
 
 void SortingAndSearch::calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor){

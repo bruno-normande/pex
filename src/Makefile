@@ -28,7 +28,8 @@ GENCODE_FLAGS := -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,co
 
 OBJECTS := ParticleSystem.o main.o ParticleSystem_cuda.o World.o \
 DirectChecking.o SortingContactDetection.o SortingContactDetection_cuda.o \
-DirectMapping.o DirectMapping_cuda.o CellMapping.o CellMapping_cuda.o
+DirectMapping.o DirectMapping_cuda.o CellMapping.o CellMapping_cuda.o \
+SortingAndSearch.o SortingAndSearch_cuda.o
 
 main.o: main.cpp
 	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
@@ -61,6 +62,12 @@ CellMapping.o: CellMapping.cpp
 	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 	
 CellMapping_cuda.o: CellMapping_cuda.cu
+	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -dc $<
+
+SortingAndSearch.o: SortingAndSearch.cpp
+	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
+        
+SortingAndSearch_cuda.o: SortingAndSearch_cuda.cu
 	$(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -dc $<
 
 particles: $(OBJECTS)

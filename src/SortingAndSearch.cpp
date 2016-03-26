@@ -40,7 +40,7 @@ void SortingAndSearch::memInitialize(){
 
 void SortingAndSearch::createNeighboorList(float4 *dPos, float4 *dVel){
 	// pre
-	calcHash(dPos);
+	prepareGrid(dPos);
 
 	// sortparticles
 	sortParticles();
