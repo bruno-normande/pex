@@ -31,7 +31,7 @@ void CellMapping::memInitialize(){
 }
 
 void CellMapping::setParams(SysParams params){
-	d = params.particle_radius*4;
+	d = params.particle_radius*1;
 	n_particles = params.n_particles;
 	gridDim.x = ceil( (params.p_max.x - params.p_min.x) / d);
 	gridDim.y = ceil( (params.p_max.y - params.p_min.y) / d);
