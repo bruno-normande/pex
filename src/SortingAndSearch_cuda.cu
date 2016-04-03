@@ -122,7 +122,7 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 
 			//thrust::device_ptr<uint4> start = thrust::lower_bound(thrust::device_ptr<uint4>(dSortedGrid),
 			//		thrust::device_ptr<uint4>(dSortedGrid + n_particles),
-			//		particle_before());
+			//		cell, particle_before());
 			//thrust::device_ptr<uint4> b = start;
 			//++b;
 //			for(int x = -1; x <= 1; x++)

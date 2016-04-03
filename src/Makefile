@@ -19,9 +19,9 @@ ALL_CCFLAGS := $(NVCCFLAGS)
 
 ALL_LDFLAGS := $(ALL_CCFLAGS)
 
-LIBRARIES := /home/bruno_normande/library/boost/lib/libboost_program_options.a 
+LIBRARIES := /home/bruno_normande/library/lib/libboost_program_options.a 
 
-INCLUDES := -I /home/bruno_normande/library/boost/include/
+INCLUDES := -I /home/bruno_normande/library/include/
 
 GENCODE_FLAGS := -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35
 #-gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_35,code=compute_35
