@@ -46,14 +46,17 @@ uint find_first(uint4 *dSortedGrid, const uint4 value, const uint n){
 	uint l = 0;
 	uint r = n - 1;
 
+	cell_equal equal;
+	cell_before before;
+
 	while( l <= r){
-		unint m = (l + r)/2;
-		if( cell_equal(dSortedGrid[m], value)){ // found, search for first
-			while(m > 0 && cell_equal(dSortedGrid[m-1], dSortedGrid[m]))
+		uint m = (l + r)/2;
+		if( equal(dSortedGrid[m], value) ){ // found, search for first
+			while(m > 0 && equal(dSortedGrid[m-1], dSortedGrid[m]))
 				m--;
 			return m;
 
-		}else if(cell_before(dSortedGrid[m]), value){
+		}else if( before(dSortedGrid[m], value) ){
 			l = m + 1;
 		}else{
 			r = m - 1;
