@@ -139,7 +139,7 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 	float3 pos = make_float3(sortedPos[idx]);
 	float3 vel = make_float3(sortedVel[idx]);
 
-	uint3 gridPos = get_grid_pos(pos, pMin, d);
+	int3 gridPos = get_grid_pos(pos, pMin, d);
 
 	float3 resulting_force = make_float3(0);
 
@@ -148,7 +148,8 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 	for(int z = -1; z <= 1; z++){
 		for(int y = -1; y <= 1; y++){
 			// get index of first x-1 continue until x != x+1
-			if(gridPos.y + y >= gridDim.y || gridPos.z + z >= gridDim.z )
+			if( gridPos.y < 0 || gridPos.y + y >= gridDim.y ||
+					gridPos.z < 0 || gridPos.z + z >= gridDim.z )
 				continue;
 			
 			uint4 cell;
