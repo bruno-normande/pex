@@ -43,15 +43,16 @@ struct cell_equal
 
 __host__ __device__
 uint find_first(uint4 *dSortedGrid, const uint4 value, const uint n){
-	uint l = 0;
-	uint r = n - 1;
+	long l = 0;
+	long r = n - 1;
 
 	cell_equal equal;
 	cell_before before;
 
 	while( l <= r){
-		uint m = (l + r)/2;
-		if( equal(dSortedGrid[m], value) ){ // found, search for first
+		long m = (l + r)/2;
+		if( equal(dSortedGrid[m], value) )
+		{ // found, search for first
 			while(m > 0 && equal(dSortedGrid[m-1], dSortedGrid[m]))
 				m--;
 			return m;
