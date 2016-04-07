@@ -139,7 +139,7 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 	float3 pos = make_float3(sortedPos[idx]);
 	float3 vel = make_float3(sortedVel[idx]);
 
-	int3 gridPos = get_grid_pos(pos, pMin, d);
+	uint3 gridPos = get_grid_pos(pos, pMin, d);
 
 	float3 resulting_force = make_float3(0);
 
@@ -148,14 +148,19 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 	for(int z = -1; z <= 1; z++){
 		for(int y = -1; y <= 1; y++){
 			// get index of first x-1 continue until x != x+1
-			
-			int x = gridPos.x > 0 ? gridPos.x-1: gridPos.x;
-			uint4 cell = make_uint4(x, gridPos.y + y, gridPos.z + z,0);
-			
-			if(cell.y >= gridDim.y || cell.z >= gridDim.z)
+			if(gridPos.y + y >= gridDim.y || gridPos.z + z >= gridDim.z )
 				continue;
+			
+			uint4 cell;
+			uint other = n_particles;
+			for(int x = -1; x <= 1; x++){
+				cell = make_uint4(gridPos.x + x, gridPos.y + y, gridPos.z + z,0);
+				if(cell.x >= gridDim.x) continue;
 
-			uint other = find_first(dSortedGrid,cell, n_particles);
+				other = find_first(dSortedGrid,cell, n_particles);
+				if(other < n_particles) break;
+			}
+
 			while(other < n_particles){
 				uint4 neigh = dSortedGrid[other];
 				if(neigh.z != cell.z || neigh.y != cell.y || neigh.x > cell.x + 1){
