@@ -13,6 +13,8 @@ args = parser.parse_args()
 for root, dirs, files in os.walk(args.dirname[0]):
 	for f in files:
 		file_name = join(root, f)
+
+		distr = f.split("-")[-1]
 		
 		counter = 0
 		N = 0
@@ -35,4 +37,4 @@ for root, dirs, files in os.walk(args.dirname[0]):
 					time = float(line.split("=")[1].split()[0])
 				counter += 1
 		if time > 0:
-			print alg, N, time
+			print distr, alg, N, time
