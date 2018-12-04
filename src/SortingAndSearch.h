@@ -24,7 +24,7 @@ public:
 
 	void setParams(SysParams params);
 
-	inline std::string getName(){return std::string("SAS");};
+	inline std::string getName(){return std::string("Sorting And Search");};
 
 protected:
 

@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstdio>
 #include <string>
+#include <thrust/device_vector.h>
 
 #include "helper_math.h"
 #include "aux.h"
@@ -22,9 +23,10 @@ public:
 
 	virtual void memInitialize() = 0;
 
-	virtual void createNeighboorList(float4 *dPos, float4 *dVel) = 0;
+	virtual void createNeighboorList(thrust::host_vector<float4>& dPos, thrust::host_vector<float4> & dVel) = 0;
 
-	virtual void calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor) = 0;
+	virtual void calculateContactForce(thrust::host_vector<float4>& dPos, thrust::host_vector<float4>& dVel, 
+										thrust::host_vector<float4>& dFor) = 0;
 
 	virtual void setParams(SysParams params) = 0;
 

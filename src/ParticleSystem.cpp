@@ -27,9 +27,7 @@ inline float frand()
 }
 
 ParticleSystem::ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg,
-								SystemType distr) :
-	hPos(NULL), dPos(NULL), hVel(NULL), dVel(NULL),
-	hObs(NULL), dObs(NULL), dFor(NULL)
+								SystemType distr)
 {
 	type = distr; // default
 
@@ -76,20 +74,7 @@ ParticleSystem::ParticleSystem(unsigned int n_particles, NeighboorAlg neigh_alg,
 }
 
 ParticleSystem::~ParticleSystem() {
-	if(hPos)
-		delete hPos;
-	if(dPos)
-		cudaFree(dPos);
-	if(hVel)
-		delete hVel;
-	if(dVel)
-		cudaFree(dVel);
-	if(dFor)
-		cudaFree(dFor);
-	if(hObs)
-		delete hObs;
-	if(dObs)
-		cudaFree(dObs);
+	
 }
 
 float ParticleSystem::run(){
@@ -141,25 +126,25 @@ float ParticleSystem::run(){
 void ParticleSystem::memInitialize(){
 	// alocate host memory
 	// position
-	hPos = new float4[params.n_particles];
-	hVel = new float4[params.n_particles];
+	hPos.resize(params.n_particles);
+	hVel.resize(params.n_particles);
 	if(params.n_obstacles)
-		hObs = new float4[params.n_obstacles];
+		hObs.resize(params.n_obstacles);
 
 	// alocate device memory
-	checkCudaErrors(cudaMalloc((void**) &dPos, sizeof(float4) * params.n_particles));
-	checkCudaErrors(cudaMalloc((void**) &dVel, sizeof(float4) * params.n_particles));
-	checkCudaErrors(cudaMalloc((void**) &dFor, sizeof(float4) * params.n_particles));
+	dPos.resize(params.n_particles);
+	dVel.resize(params.n_particles);
+	dFor.resize(params.n_particles);
 	if(params.n_obstacles)
-		checkCudaErrors(cudaMalloc((void**) &dObs, sizeof(float4) * params.n_obstacles));
+		dObs.resize(params.n_obstacles);
 
 }
 
 void ParticleSystem::createParticles(){
 	float jitter = params.particle_radius*0.01;
 	unsigned int side = ceilf(powf(params.n_particles, 1.0/3.0));
-	unsigned int grid_size[3]; // quantidade de partículas por lado
-	float distance = params.particle_radius*2; // distância entre partículas
+	unsigned int grid_size[3]; // N particles by side
+	float distance = params.particle_radius*2; // Distance between particles center
 	float z0 = 0;
 	float3 add_to_max_border = make_float3(0);
 
@@ -167,7 +152,7 @@ void ParticleSystem::createParticles(){
 
 		case SPARSE:
 		{
-			// igual ao dense mas com Distancia entre partículas maior
+			// Same as danse, but increases distance between particles
 			grid_size[0] = grid_size[1] = grid_size[2] = side;
 			distance = params.particle_radius*10.0;
 			randomizeVelocity();

@@ -8,6 +8,8 @@
 #ifndef DIRECTCHECKING_H_
 #define DIRECTCHECKING_H_
 
+#include <thrust/device_vector.h>
+
 #include "ContactDetection.h"
 #include "aux.h"
 
@@ -18,10 +20,11 @@ public:
 
 	void memInitialize(){}
 
-	void createNeighboorList(float4 *dPos, float4 *dVel){}
+	void createNeighboorList(thrust::host_vector<float4>& dPos, thrust::host_vector<float4> & dVel){}
 
 	// Colocar para receber ponteiro dFor
-	void calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor);
+	void calculateContactForce(thrust::host_vector<float4>& dPos, thrust::host_vector<float4>& dVel, 
+										thrust::host_vector<float4>& dFor);
 
 	inline void setParams(SysParams params){n_particles = params.n_particles;}
 

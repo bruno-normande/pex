@@ -16,7 +16,8 @@ extern __constant__
 SysParams system_params;
 
 __global__
-void calculate_contact_force(float4 *dPos, float4 *dVel, float4 *dFor, unsigned int n_particles){
+void calculate_contact_force(thrust::host_vector<float4>& dPos, thrust::host_vector<float4>& dVel, 
+                                thrust::host_vector<float4>& dFor){
         int idx = blockIdx.x * blockDim.x + threadIdx.x;
 
         if(idx>=n_particles) return;

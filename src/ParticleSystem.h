@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <string>
 #include <fstream>
+#include <thrust/device_vector.h>
+#include <thrust/host_vector.h>
 #include "aux.h"
 #include "ContactDetection.h"
 
@@ -53,13 +55,14 @@ public:
 	void printInfo();
 
 protected:
-	float4 *hPos;
-	float4 *dPos;
-	float4 *hVel;
-	float4 *dVel;
-	float4 *dFor;
-	float4 *hObs;
-	float4 *dObs;
+//thrust::device_vector<int>
+	thrust::host_vector<float4> hPos;
+	thrust::device_vector<float4> dPos;
+	thrust::host_vector<float4> hVel;
+	thrust::device_vector<float4> dVel;
+	thrust::device_vector<float4> dFor;
+	thrust::host_vector<float4> hObs;
+	thrust::device_vector<float4> dObs;
 
 	SysParams params;
 

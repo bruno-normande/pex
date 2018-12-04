@@ -10,7 +10,6 @@
 
 #include "ParticleSystem.h"
 
-#define GRID_SIZE       64
 #define NUM_PARTICLES   5
 
 int main(int argc, char **argv) {

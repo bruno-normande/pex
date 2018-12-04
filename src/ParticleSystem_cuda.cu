@@ -12,7 +12,8 @@ __constant__
 SysParams system_params;
 
 __global__
-void integrate_system(float4 *pos, float4 *vel, float4 *force, float4 *obstacles,
+void integrate_system(thrust::device_vector<float4>& pos, thrust::device_vector<float4>& vel, 
+		thrust::device_vector<float4>&  force, thrust::device_vector<float4>&  obstacles,
 		unsigned int n_particles, unsigned int n_obstacles)
 {
 	int idx = blockIdx.x * blockDim.x + threadIdx.x;
@@ -46,21 +47,14 @@ void ParticleSystem::integrate(){
 }
 
 void ParticleSystem::copyParticlesToDevice(){
-        checkCudaErrors(cudaMemcpy(dPos, hPos, sizeof(float4)*params.n_particles,
-        							cudaMemcpyHostToDevice));
-        checkCudaErrors(cudaMemcpy(dVel, hVel, sizeof(float4)*params.n_particles,
-        							cudaMemcpyHostToDevice));
+	dpos = hpos;
+	dVel = hVel;
 	if(params.n_obstacles)
-        	checkCudaErrors(cudaMemcpy(dObs, hObs, sizeof(float4)*params.n_obstacles,
-                							cudaMemcpyHostToDevice));
-
+        	dObs = hObs
 }
 
 void ParticleSystem::copyParticlesToHost(){
-        checkCudaErrors(cudaMemcpy(hPos, dPos, sizeof(float4)*params.n_particles,
-        							cudaMemcpyDeviceToHost));
-        checkCudaErrors(cudaMemcpy(hVel, dVel, sizeof(float4)*params.n_particles,
-        							cudaMemcpyDeviceToHost));
-
+        hPos = dPos;
+        hVel = dVel;
 }
 
