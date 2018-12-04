@@ -148,8 +148,8 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 	for(int z = -1; z <= 1; z++){
 		for(int y = -1; y <= 1; y++){
 			// get index of first x-1 continue until x != x+1
-			if( gridPos.y < 0 || gridPos.y + y >= gridDim.y ||
-					gridPos.z < 0 || gridPos.z + z >= gridDim.z )
+			if( gridPos.y + y < 0 || gridPos.y + y >= gridDim.y ||
+					gridPos.z + z < 0 || gridPos.z + z >= gridDim.z )
 				continue;
 			
 			uint4 cell;
@@ -159,6 +159,7 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 				if(cell.x >= gridDim.x) continue;
 
 				other = find_first(dSortedGrid,cell, n_particles);
+				
 				if(other < n_particles) break;
 			}
 
