@@ -32,6 +32,8 @@ for root, dirs, files in os.walk(args.dirname[0]):
 						alg = "CM"
 					elif alg == "Direct Mapping":
 						alg = "DM"
+					elif alg == "Sorting And Search":
+						alg = "SAS"
 
 				if counter == 6:
 					time = float(line.split("=")[1].split()[0])
