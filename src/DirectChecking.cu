@@ -19,7 +19,7 @@ __global__
 void calculate_contact_force(thrust::host_vector<float4>& dPos, thrust::host_vector<float4>& dVel, 
                                 thrust::host_vector<float4>& dFor){
         int idx = blockIdx.x * blockDim.x + threadIdx.x;
-
+        unsigned int n_particles = dPos.size();
         if(idx>=n_particles) return;
 
         float3 force = make_float3(0,0,0);
@@ -33,8 +33,10 @@ void calculate_contact_force(thrust::host_vector<float4>& dPos, thrust::host_vec
         dFor[idx] = make_float4(force, 0);
 }
 
-void DirectChecking::calculateContactForce(float4 *dPos, float4 *dVel, float4 *dFor){
+void DirectChecking::calculateContactForce(thrust::host_vector<float4>& dPos, thrust::host_vector<float4>& dVel, 
+                                                thrust::host_vector<float4>& dFor){
 	unsigned int n_threads, n_blocks;
+        unsigned int n_particles = dPos.size();
 	computeGridSize(n_particles,256, &n_blocks, &n_threads);
 	calculate_contact_force<<<n_blocks, n_threads>>>(dPos, dVel, dFor, n_particles);
 }
