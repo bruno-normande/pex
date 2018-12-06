@@ -17,9 +17,8 @@ SysParams system_params;
 
 __global__
 void calculate_contact_force(thrust::device_vector<float4>& dPos, thrust::device_vector<float4>& dVel, 
-                                thrust::device_vector<float4>& dFor){
+                                thrust::device_vector<float4>& dFor, unsigned int n_particles){
         int idx = blockIdx.x * blockDim.x + threadIdx.x;
-        unsigned int n_particles = dPos.size();
         if(idx>=n_particles) return;
 
         float3 force = make_float3(0,0,0);
@@ -34,11 +33,10 @@ void calculate_contact_force(thrust::device_vector<float4>& dPos, thrust::device
 }
 
 void DirectChecking::calculateContactForce(thrust::device_vector<float4>& dPos, thrust::device_vector<float4>& dVel, 
-                                                thrust::device_vector<float4>& dFor){
+                                                thrust::device_vector<float4>& dFor, unsigned int n_particles){
 	unsigned int n_threads, n_blocks;
-        unsigned int n_particles = dPos.size();
 	computeGridSize(n_particles,256, &n_blocks, &n_threads);
-	calculate_contact_force<<<n_blocks, n_threads>>>(dPos, dVel, dFor);
+	calculate_contact_force<<<n_blocks, n_threads>>>(dPos, dVel, dFor, n_particles);
 }
 
 
