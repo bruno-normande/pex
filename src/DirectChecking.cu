@@ -38,7 +38,7 @@ void DirectChecking::calculateContactForce(thrust::host_vector<float4>& dPos, th
 	unsigned int n_threads, n_blocks;
         unsigned int n_particles = dPos.size();
 	computeGridSize(n_particles,256, &n_blocks, &n_threads);
-	calculate_contact_force<<<n_blocks, n_threads>>>(dPos, dVel, dFor, n_particles);
+	calculate_contact_force<<<n_blocks, n_threads>>>(dPos, dVel, dFor);
 }
 
 
