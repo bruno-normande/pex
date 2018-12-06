@@ -153,8 +153,8 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 				continue;
 			
 			uint4 cell;
-			thrust::device_ptr<uint4> other = n_particles;
 			thrust::device_ptr<uint4> end = thrust::device_ptr<uint4>(dSortedGrid + n_particles);
+			thrust::device_ptr<uint4> other = end;
 			for(int x = -1; x <= 1; x++){
 				cell = make_uint4(gridPos.x + x, gridPos.y + y, gridPos.z + z,0);
 				if(cell.x >= gridDim.x) continue;
@@ -173,7 +173,7 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 					break;
 				}
 				if(neigh.w != idx){
-					uint index = other - thrust::device_ptr<uint4>(dSortedGrid);
+					uint index = other.get() - dSortedGrid;
 					float3 neigh_pos = make_float3(sortedPos[index]);
 					float3 neigh_vel = make_float3(sortedVel[index]);
 
