@@ -153,28 +153,29 @@ void calculate_contact_force(float4 *sortedPos, float4 *sortedVel,
 				continue;
 			
 			uint4 cell;
-			uint other = n_particles;
+			thrust::device_ptr<uint4> other = n_particles;
+			thrust::device_ptr<uint4> end = thrust::device_ptr<uint4>(dSortedGrid + n_particles);
 			for(int x = -1; x <= 1; x++){
 				cell = make_uint4(gridPos.x + x, gridPos.y + y, gridPos.z + z,0);
 				if(cell.x >= gridDim.x) continue;
 
 				// other = find_first(dSortedGrid,cell, n_particles);
 				other = thrust::lower_bound(thrust::device_ptr<uint4>(dSortedGrid),
-											thrust::device_ptr<uint4>(dSortedGrid + n_particles), 
-											cell, cell_before())
+											end, cell, cell_before());
 				
-				if(other < n_particles) break;
+				if(other < end) break;
 			}
 
-			while(other < n_particles){
-				uint4 neigh = dSortedGrid[other];
+			while(other < end){
+				uint4 neigh = *(other.get());
 				if(neigh.z != cell.z || neigh.y != cell.y || neigh.x > cell.x + 1){
 					// Check if next one is still in line (x-1 -> x+1, y, z)
 					break;
 				}
 				if(neigh.w != idx){
-					float3 neigh_pos = make_float3(sortedPos[other]);
-					float3 neigh_vel = make_float3(sortedVel[other]);
+					uint index = other - thrust::device_ptr<uint4>(dSortedGrid);
+					float3 neigh_pos = make_float3(sortedPos[index]);
+					float3 neigh_vel = make_float3(sortedVel[index]);
 
 					resulting_force += World::contactForce(pos, neigh_pos,
 							vel, neigh_vel, r, r);
