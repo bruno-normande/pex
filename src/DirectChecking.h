@@ -20,11 +20,11 @@ public:
 
 	void memInitialize(){}
 
-	void createNeighboorList(thrust::host_vector<float4>& dPos, thrust::host_vector<float4> & dVel){}
+	void createNeighboorList(thrust::device_vector<float4>& dPos, thrust::device_vector<float4> & dVel){}
 
 	// Colocar para receber ponteiro dFor
-	void calculateContactForce(thrust::host_vector<float4>& dPos, thrust::host_vector<float4>& dVel, 
-										thrust::host_vector<float4>& dFor);
+	void calculateContactForce(thrust::device_vector<float4>& dPos, thrust::device_vector<float4>& dVel, 
+										thrust::device_vector<float4>& dFor);
 
 	inline void setParams(SysParams params){n_particles = params.n_particles;}
 

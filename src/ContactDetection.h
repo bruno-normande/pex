@@ -23,10 +23,10 @@ public:
 
 	virtual void memInitialize() = 0;
 
-	virtual void createNeighboorList(thrust::host_vector<float4>& dPos, thrust::host_vector<float4> & dVel) = 0;
+	virtual void createNeighboorList(thrust::device_vector<float4>& dPos, thrust::device_vector<float4> & dVel) = 0;
 
-	virtual void calculateContactForce(thrust::host_vector<float4>& dPos, thrust::host_vector<float4>& dVel, 
-										thrust::host_vector<float4>& dFor) = 0;
+	virtual void calculateContactForce(thrust::device_vector<float4>& dPos, thrust::device_vector<float4>& dVel, 
+										thrust::device_vector<float4>& dFor) = 0;
 
 	virtual void setParams(SysParams params) = 0;
 
